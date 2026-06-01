@@ -250,6 +250,7 @@
       : "";
 
     panel.innerHTML = `
+      <div class="grabber"></div>
       <div class="sheet-head">
         <h2>Detalle</h2>
         <button class="sheet-close" data-close aria-label="Cerrar">&times;</button>
@@ -314,7 +315,7 @@
     panel.querySelectorAll("[data-close]").forEach((el) => (el.onclick = closeDetail));
     $("#detail .sheet-backdrop").onclick = closeDetail;
   }
-  function closeDetail() { $("#detail").hidden = true; }
+  function closeDetail() { resetPanel($("#detailPanel")); $("#detail").hidden = true; }
 
   /* ---------- Carrito ---------- */
   function changeQty(product, variantId, delta) {
@@ -406,7 +407,61 @@
 
   /* ---------- Hoja del carrito ---------- */
   function openSheet() { $("#sheet").hidden = false; renderCartItems(); }
-  function closeSheet() { $("#sheet").hidden = true; }
+  function closeSheet() { resetPanel($("#sheet .sheet-panel")); $("#sheet").hidden = true; }
+
+  /* ---------- Gesto: deslizar hacia abajo para cerrar ---------- */
+  function resetPanel(panel) {
+    if (!panel) return;
+    panel.style.transition = "";
+    panel.style.transform = "";
+  }
+
+  // Permite cerrar una hoja arrastrándola hacia abajo (solo si su contenido
+  // ya está arriba del todo). Bloquea el "pull-to-refresh" mientras se arrastra.
+  function enableSwipeToClose(panel, scrollSelector, closeFn) {
+    let startY = 0, startX = 0, curY = 0, dragging = false, axis = null;
+    const scrollEl = () => panel.querySelector(scrollSelector);
+
+    panel.addEventListener("touchstart", (e) => {
+      const sc = scrollEl();
+      if (sc && sc.scrollTop > 0) { dragging = false; return; }
+      startY = curY = e.touches[0].clientY;
+      startX = e.touches[0].clientX;
+      dragging = true; axis = null;
+      panel.style.transition = "none";
+    }, { passive: true });
+
+    panel.addEventListener("touchmove", (e) => {
+      if (!dragging) return;
+      const t = e.touches[0];
+      const dy = t.clientY - startY;
+      const dx = t.clientX - startX;
+      if (axis === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+        axis = Math.abs(dy) > Math.abs(dx) ? "v" : "h"; // vertical o horizontal (carrusel)
+      }
+      if (axis !== "v" || dy <= 0) { panel.style.transform = ""; return; }
+      const sc = scrollEl();
+      if (sc && sc.scrollTop > 0) { panel.style.transform = ""; return; }
+      e.preventDefault(); // evita recargar la página y el scroll interno
+      curY = t.clientY;
+      panel.style.transform = `translateY(${dy}px)`;
+    }, { passive: false });
+
+    const end = () => {
+      if (!dragging) return;
+      dragging = false;
+      const dy = curY - startY;
+      panel.style.transition = "transform 0.22s ease";
+      if (dy > 90) {
+        panel.style.transform = "translateY(100%)";
+        setTimeout(() => { resetPanel(panel); closeFn(); }, 200);
+      } else {
+        panel.style.transform = "";
+      }
+    };
+    panel.addEventListener("touchend", end);
+    panel.addEventListener("touchcancel", end);
+  }
 
   /* ---------- Inicialización ---------- */
   function wireUI() {
@@ -421,6 +476,10 @@
     $("#cartBar").addEventListener("click", openSheet);
     $("#sendBtn").addEventListener("click", sendOrder);
     $("#sheet").querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeSheet));
+
+    // Deslizar hacia abajo para cerrar (detalle y carrito).
+    enableSwipeToClose($("#detailPanel"), ".detail-body", closeDetail);
+    enableSwipeToClose($("#sheet .sheet-panel"), ".cart-items", closeSheet);
   }
 
   async function init() {
