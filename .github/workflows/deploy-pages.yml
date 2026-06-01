@@ -12,10 +12,10 @@ permissions:
   pages: write
   id-token: write
 
-# Permite un solo despliegue a la vez.
+# Un despliegue a la vez; no cancelar el que esté en curso (evita cortar un deploy bueno).
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
