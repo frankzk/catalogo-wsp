@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - claude/relaxed-johnson-8GfE8
   workflow_dispatch:
 
 permissions:
