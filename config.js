@@ -17,7 +17,7 @@ window.CATALOG_CONFIG = {
   // Formato internacional, solo dígitos (sin +, espacios ni guiones).
   // Perú = 51 + número. Ejemplo: 51987654321
   // ⚠️ REEMPLAZA este valor por tu número real.
-  whatsappNumber: "51999999999",
+  whatsappNumber: "51918100477",
 
   // Descuento aplicado a TODOS los precios (en %). El envío ya va incluido aquí.
   discountPercent: 25,
