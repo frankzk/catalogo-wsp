@@ -54,6 +54,8 @@ Abre **`config.js`** y completa:
 
 > **Reseñas e imágenes:** cuando se conecta la Storefront API, la reseña sale de la *descripción* del producto en Shopify (recortada) y las imágenes son las primeras 5 del producto. Para reseñas "supervendedoras" de 3 líneas, edita la descripción del producto en Shopify o usa el catálogo de muestra como guía.
 
+> **Packs con su propia oferta:** un producto puede llevar `"noDiscount": true` para que NO se le aplique el 25% global (ej. packs "2+1 gratis" que ya son la oferta). Cada variante puede tener `"listPrice"` para mostrar el precio tachado del pack. Ejemplo: ver el producto "Antena TV" en `data/products.json`.
+
 > ⚠️ Lo mínimo para que funcione: poner tu `whatsappNumber`. Con eso ya opera usando el catálogo de muestra.
 
 ### Conectar el catálogo completo de Shopify (recomendado)

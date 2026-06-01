@@ -3,6 +3,19 @@
   "currency": "PEN",
   "products": [
     {
+      "id": "Antena TV",
+      "title": "Antena TV — Más Canales sin Mensualidad",
+      "type": "Tecnología",
+      "desc": "Ve canales abiertos (noticias, deportes y novelas) sin pagar cable ni mensualidad. Mejor recepción gracias a su base magnética y cable de 5 metros. Instalación rápida: conéctala a tu TV, busca canales y listo.",
+      "noDiscount": true,
+      "images": ["https://d8j0ntlcm91z4.cloudfront.net/user_30NIpqTWYygvnvzZOupOVT4RLnW/hf_20260601_173053_7de4615e-1723-41bd-9188-04847bb8841c.png"],
+      "variants": [
+        { "id": "antena-1", "title": "1 Unidad", "price": 49.0, "available": true, "sku": "ANT-1" },
+        { "id": "antena-3", "title": "2 Unidades + 1 Gratis (Total 3 und.) · Más vendido", "price": 98.0, "listPrice": 147.0, "available": true, "sku": "ANT-3" },
+        { "id": "antena-5", "title": "3 Unidades + 2 Gratis (Total 5 und.) · Oferta única", "price": 147.0, "listPrice": 245.0, "available": true, "sku": "ANT-5" }
+      ]
+    },
+    {
       "id": "8 en 1 Ultra Cápsulas SuperHuman",
       "title": "8 en 1 Ultra Cápsulas SuperHuman™ (120 cáps.)",
       "type": "Salud",

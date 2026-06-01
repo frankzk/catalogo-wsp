@@ -132,7 +132,21 @@
       .filter((p) => p.variants.length > 0); // sin variantes disponibles → no se muestra
   }
 
-  const minPrice = (p) => Math.min(...p.variants.map((v) => v.price));
+  // Precio que paga el cliente y precio "antes" (tachado) para una variante.
+  // - Producto normal: aplica el descuento global (old = precio original).
+  // - Producto con noDiscount (ej. packs que ya son la oferta): usa price tal cual
+  //   y muestra listPrice como tachado si existe.
+  function priced(product, variant) {
+    if (product && product.noDiscount) {
+      const old = variant.listPrice && variant.listPrice > variant.price ? variant.listPrice : 0;
+      return { pay: variant.price, old };
+    }
+    return { pay: final(variant.price), old: DISCOUNT > 0 ? variant.price : 0 };
+  }
+
+  // Variante más barata (por lo que paga el cliente) de un producto.
+  const cheapestVariant = (p) =>
+    p.variants.reduce((a, b) => (priced(p, b).pay < priced(p, a).pay ? b : a));
 
   /* ---------- Categorías ---------- */
   function buildCategories() {
@@ -158,14 +172,15 @@
   }
 
   /* ---------- Bloque de precio (antes/después) ---------- */
-  function priceBlock(price) {
-    if (DISCOUNT > 0) {
+  // Recibe {pay, old}: muestra el precio tachado solo si old > pay.
+  function priceBlock(pr) {
+    if (pr.old && pr.old > pr.pay) {
       return `<div class="price">
-        <span class="price-old">${money(price)}</span>
-        <span class="price-now">${money(final(price))}</span>
+        <span class="price-old">${money(pr.old)}</span>
+        <span class="price-now">${money(pr.pay)}</span>
       </div>`;
     }
-    return `<div class="price"><span class="price-now">${money(price)}</span></div>`;
+    return `<div class="price"><span class="price-now">${money(pr.pay)}</span></div>`;
   }
 
   /* ---------- Grilla ---------- */
@@ -189,7 +204,7 @@
       <div class="card-body">
         <h3 class="card-title">${escapeHtml(p.title)}</h3>
         ${p.desc ? `<p class="card-desc">${escapeHtml(p.desc)}</p>` : ""}
-        ${priceBlock(minPrice(p))}
+        ${priceBlock(priced(p, cheapestVariant(p)))}
         <div class="card-foot"></div>
       </div>`;
 
@@ -246,13 +261,13 @@
         ${dots}
         <h3 class="detail-title">${escapeHtml(p.title)}</h3>
         ${p.desc ? `<p class="detail-desc">${escapeHtml(p.desc)}</p>` : ""}
-        ${priceBlock(minPrice(p))}
+        <div id="detailPrice">${priceBlock(priced(p, p.variants[0]))}</div>
         ${CFG.shippingNote ? `<p class="ship-note">${escapeHtml(CFG.shippingNote)}</p>` : ""}
         ${
           p.variants.length > 1
             ? `<label class="detail-label">Elige una opción:</label>
                <select class="detail-variant">
-                 ${p.variants.map((v) => `<option value="${v.id}">${escapeHtml(v.title)} — ${money(final(v.price))}</option>`).join("")}
+                 ${p.variants.map((v) => `<option value="${v.id}">${escapeHtml(v.title)} — ${money(priced(p, v).pay)}</option>`).join("")}
                </select>`
             : ""
         }
@@ -271,7 +286,13 @@
     }
 
     const sel = panel.querySelector(".detail-variant");
-    if (sel) sel.onchange = () => { selVariant = sel.value; drawDetailFoot(); };
+    if (sel)
+      sel.onchange = () => {
+        selVariant = sel.value;
+        const v = p.variants.find((x) => x.id === selVariant);
+        $("#detailPrice", panel).innerHTML = priceBlock(priced(p, v));
+        drawDetailFoot();
+      };
 
     function drawDetailFoot() {
       const foot = $("#detailFoot", panel);
@@ -309,7 +330,7 @@
 
   function cartTotals() {
     let count = 0, total = 0;
-    cart.forEach((e) => { count += e.qty; total += e.qty * final(e.variant.price); });
+    cart.forEach((e) => { count += e.qty; total += e.qty * priced(e.product, e.variant).pay; });
     return { count, total };
   }
 
@@ -336,7 +357,7 @@
         <div class="cart-row-info">
           <div class="cart-row-title">${escapeHtml(e.product.title)}</div>
           ${variantLabel ? `<div class="cart-row-variant">${escapeHtml(variantLabel)}</div>` : ""}
-          <div class="cart-row-price">${money(final(e.variant.price))} c/u</div>
+          <div class="cart-row-price">${money(priced(e.product, e.variant).pay)} c/u</div>
         </div>
         <div class="stepper">
           <button data-act="dec" aria-label="Quitar uno">−</button>
@@ -357,12 +378,14 @@
     cart.forEach((e) => {
       const variantLabel = e.variant.title !== "Default" ? ` (${e.variant.title})` : "";
       const sku = e.variant.sku ? ` [${e.variant.sku}]` : "";
-      const lineTotal = e.qty * final(e.variant.price);
+      const lineTotal = e.qty * priced(e.product, e.variant).pay;
       lines.push(`• ${e.qty}x ${e.product.title}${variantLabel}${sku} — ${money(lineTotal)}`);
     });
     lines.push("");
     lines.push(`*Total: ${money(cartTotals().total)}*`);
-    if (DISCOUNT > 0) lines.push(`(Precios con ${DISCOUNT}% de descuento aplicado)`);
+    let anyDiscounted = false;
+    cart.forEach((e) => { if (!(e.product && e.product.noDiscount)) anyDiscounted = true; });
+    if (DISCOUNT > 0 && anyDiscounted) lines.push(`(Precios con ${DISCOUNT}% de descuento aplicado)`);
     if (CFG.shippingNote) lines.push(CFG.shippingNote);
     return lines.join("\n");
   }
