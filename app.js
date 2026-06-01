@@ -19,7 +19,7 @@
 
   /* ---------- Utilidades ---------- */
   const money = (n) =>
-    new Intl.NumberFormat("es-PE", {
+    new Intl.NumberFormat(CFG.locale || "es-PE", {
       style: "currency",
       currency: CURRENCY,
       minimumFractionDigits: 2,

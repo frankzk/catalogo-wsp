@@ -7,23 +7,27 @@
  */
 window.CATALOG_CONFIG = {
   // Nombre de la tienda (aparece en la cabecera).
-  storeName: "Kenku Perú",
+  storeName: "Mireva Costa Rica",
 
-  // Título y subtítulo del catálogo (sensación de acceso exclusivo).
-  headline: "Acceso exclusivo",
-  subtitle: "Primera compra · 25% OFF + envío gratis",
+  // Título y subtítulo del catálogo.
+  headline: "Mireva Costa Rica",
+  subtitle: "Envío gratis a todo Costa Rica 🚚",
+
+  // Idioma/formato de números (es-CR = colones tipo ₡19.900,00).
+  locale: "es-CR",
 
   // Número de WhatsApp del negocio AL QUE llega el pedido.
   // Formato internacional, solo dígitos (sin +, espacios ni guiones).
-  // Perú = 51 + número. Ejemplo: 51987654321
+  // Costa Rica = 506 + número. Ejemplo: 50688889999
   // ⚠️ REEMPLAZA este valor por tu número real.
   whatsappNumber: "51918100477",
 
-  // Descuento aplicado a TODOS los precios (en %). El envío ya va incluido aquí.
-  discountPercent: 25,
+  // Descuento global aplicado a los precios (en %). 0 = sin descuento global.
+  // Los packs con oferta propia usan "noDiscount": true en data/products.json.
+  discountPercent: 0,
 
   // Nota de envío que se muestra y se incluye en el pedido.
-  shippingNote: "Envío gratis incluido 🎉",
+  shippingNote: "Envío gratis a todo Costa Rica 🎉",
 
   // ---- Conexión en vivo con Shopify (opcional pero recomendado) ----
   // Si completas estos dos campos, el catálogo se carga EN VIVO desde Shopify
@@ -34,7 +38,7 @@ window.CATALOG_CONFIG = {
   //   "Desarrollar apps" → Crear una app → Configurar Storefront API →
   //   marcar "unauthenticated_read_product_listings" (y _read_product_inventory)
   //   → Instalar → copiar el "Storefront API access token".
-  shopifyDomain: "", // ej: "kenku.pe" o "tu-tienda.myshopify.com"
+  shopifyDomain: "", // ej: "mireva.cr" o "tu-tienda.myshopify.com"
   storefrontToken: "", // token público de Storefront API
 
   // Mensaje inicial del pedido enviado por WhatsApp.

@@ -1,6 +1,6 @@
 {
-  "_comment": "Catálogo de muestra (subconjunto real de Kenku Perú). Respaldo cuando NO se configura la Storefront API. Los precios son los ORIGINALES; el descuento (config.discountPercent) lo aplica la app. 'desc' = reseña vendedora corta. 'images' = hasta 5 imágenes. 'sku' por variante.",
-  "currency": "PEN",
+  "_comment": "Catálogo de muestra (Mireva Costa Rica) en colones. Respaldo cuando NO se configura la Storefront API. 'noDiscount' evita el descuento global; 'listPrice' por variante muestra el precio tachado del pack. 'desc' = reseña vendedora. 'images' = hasta 5 imágenes. 'sku' por variante.",
+  "currency": "CRC",
   "products": [
     {
       "id": "Antena TV",
@@ -10,165 +10,10 @@
       "noDiscount": true,
       "images": ["https://d8j0ntlcm91z4.cloudfront.net/user_30NIpqTWYygvnvzZOupOVT4RLnW/hf_20260601_173053_7de4615e-1723-41bd-9188-04847bb8841c.png"],
       "variants": [
-        { "id": "antena-1", "title": "1 Unidad", "price": 49.0, "available": true, "sku": "ANT-1" },
-        { "id": "antena-3", "title": "2 Unidades + 1 Gratis (Total 3 und.) · Más vendido", "price": 98.0, "listPrice": 147.0, "available": true, "sku": "ANT-3" },
-        { "id": "antena-5", "title": "3 Unidades + 2 Gratis (Total 5 und.) · Oferta única", "price": 147.0, "listPrice": 245.0, "available": true, "sku": "ANT-5" }
+        { "id": "antena-1", "title": "1 Unidad", "price": 19900.0, "available": true, "sku": "ANT-1" },
+        { "id": "antena-3", "title": "2 Unidades + 1 Gratis (Total 3 und.) · Más vendido", "price": 39800.0, "listPrice": 59700.0, "available": true, "sku": "ANT-3" },
+        { "id": "antena-5", "title": "3 Unidades + 2 Gratis (Total 5 und.) · Oferta única", "price": 59700.0, "listPrice": 99500.0, "available": true, "sku": "ANT-5" }
       ]
-    },
-    {
-      "id": "8 en 1 Ultra Cápsulas SuperHuman",
-      "title": "8 en 1 Ultra Cápsulas SuperHuman™ (120 cáps.)",
-      "type": "Salud",
-      "desc": "Shilajit, Ashwagandha, Rhodiola, Panax y Ginseng en una sola cápsula. Más energía, foco y resistencia al estrés todos los días. Tu fórmula completa para rendir al máximo.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/Blue_White_Modern_Electronic_Product_Listing_Amazon_Product_Image.gif?v=1728160975"],
-      "variants": [{ "id": "v-superhuman8en1", "title": "Default", "price": 149.0, "available": true, "sku": "65359446" }]
-    },
-    {
-      "id": "Aceite Corporal Magic 100ml",
-      "title": "Aceite Corporal Magic™ 100 ml",
-      "type": "Salud",
-      "desc": "Rellena, tensa, reafirma e hidrata tu piel desde la primera aplicación. Absorción rápida y sin sensación grasosa. Piel más firme y luminosa en semanas.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/IMG.webp?v=1770781511"],
-      "variants": [{ "id": "v-aceitemagic", "title": "Default", "price": 129.0, "available": true, "sku": "93539554" }]
-    },
-    {
-      "id": "Acondicionador Romero Keratina",
-      "title": "Acondicionador Romero, Keratina, Ortiga y Biotina (220 gr.)",
-      "type": "Belleza",
-      "desc": "Cabello más grueso, fuerte y con volumen gracias al romero y la biotina. Reduce la caída y nutre desde la raíz. Resultados visibles con uso constante.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/ChatGPT_Image_21_abr_2025_11_49_14_p.m._1.png?v=1745297405"],
-      "variants": [{ "id": "v-acondicionador", "title": "Default", "price": 89.0, "available": true, "sku": "69852565" }]
-    },
-    {
-      "id": "Ashwagandha KSM-66",
-      "title": "Ashwagandha KSM-66 (120 cáps.)",
-      "type": "Salud",
-      "desc": "La ashwagandha más estudiada del mundo para reducir el estrés y la fatiga. Mejora el ánimo, el sueño y la energía natural. Bienestar real, sin sentirte acelerado.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/banner-CTA_Final_-_2026-03-18T174419.155.jpg?v=1773873955"],
-      "variants": [{ "id": "v-ksm66", "title": "Default", "price": 189.0, "available": true, "sku": "KSM66-120" }]
-    },
-    {
-      "id": "Astaxantina",
-      "title": "Astaxantina — Antioxidante de Alta Potencia (120 cáps.)",
-      "type": "Salud",
-      "desc": "El antioxidante más potente de la naturaleza para tu piel, vista y articulaciones. Combate el envejecimiento desde adentro. Protección celular en una cápsula al día.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/banner-CTA_Final_41.jpg?v=1770598148"],
-      "variants": [{ "id": "v-astaxantina", "title": "Default", "price": 189.0, "available": true, "sku": "ASTA-120" }]
-    },
-    {
-      "id": "Ashwagandha Gummies",
-      "title": "Ashwagandha Gummies SuperHuman™ (60 gomitas)",
-      "type": "Salud",
-      "desc": "Reduce el estrés y mejora tu ánimo con un sabor delicioso a menta. La forma más rica y fácil de tomar ashwagandha. Ideal si te cuesta tragar cápsulas.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/HechoconAswagandhaaltamentebiodisponible_Extractonaturaldementa.png?v=1751143299"],
-      "variants": [{ "id": "v-gummies", "title": "Default", "price": 89.0, "available": true, "sku": "96356926" }]
-    },
-    {
-      "id": "Berberina HCL",
-      "title": "Berberina HCL con Canela y Cúrcuma (150 cáps.)",
-      "type": "Salud",
-      "desc": "Ayuda a equilibrar el azúcar en sangre y el metabolismo de forma natural. Potenciada con canela y cúrcuma. Tu aliada para el control de la glucosa.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/hf_20260420_035809_49af321e-de70-4715-b11b-9833fd145900_1.webp?v=1776659951"],
-      "variants": [{ "id": "v-berberina", "title": "Default", "price": 129.0, "available": true, "sku": "36985694" }]
-    },
-    {
-      "id": "Cándida Cleanse",
-      "title": "Cándida Cleanse — Salud Digestiva (90 cáps.)",
-      "type": "Salud",
-      "desc": "Fórmula ayurvédica que equilibra la flora y combate el exceso de hongos. Mejora la digestión y la hinchazón. Siéntete ligero y con más energía.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/ChatGPT_Image_8_may_2025_09_39_43_p.m._1.png?v=1746759190"],
-      "variants": [{ "id": "v-candida", "title": "Default", "price": 169.0, "available": true, "sku": "765545233" }]
-    },
-    {
-      "id": "CapsiMen",
-      "title": "CapsiMen™ — Salud Masculina (90 cáps.)",
-      "type": "Salud",
-      "desc": "Apoya la próstata, la vitalidad y el rendimiento sexual masculino. Extractos de plantas y minerales naturales. Energía y bienestar para el hombre activo.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/2fd1c42a-8cc3-4b6d-9eb9-471cc7136b10.png?v=1764980424"],
-      "variants": [{ "id": "v-capsimen", "title": "Default", "price": 69.0, "available": true, "sku": "85469857" }]
-    },
-    {
-      "id": "Calci D + Mg",
-      "title": "Calci D + Mg — Soporte Óseo y Muscular (300 g)",
-      "type": "Salud",
-      "desc": "Calcio, vitamina D y magnesio para huesos y músculos fuertes. Apoya tu energía y metabolismo diario. En polvo, fácil de tomar y absorber.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/banner-CTA_Final_53.jpg?v=1770855323"],
-      "variants": [{ "id": "v-calcid", "title": "Default", "price": 119.0, "available": true, "sku": "CALCID-300" }]
-    },
-    {
-      "id": "BeeWax Cera de Abeja",
-      "title": "BeeWax™ — Cera de Abeja para Muebles",
-      "type": "Hogar",
-      "desc": "Nutre, protege y devuelve el brillo natural a tu madera. 100% cera de abeja, sin químicos agresivos. Tus muebles como nuevos en minutos.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/Untitled_design_31_1.png?v=1742583701"],
-      "variants": [{ "id": "v-beewax", "title": "Default", "price": 79.0, "available": true, "sku": "855652366" }]
-    },
-    {
-      "id": "Almohadilla Reemplazo Mopa",
-      "title": "Almohadilla de Reemplazo para Trapeador / Mopa",
-      "type": "Hogar",
-      "desc": "Repuesto de microfibra que atrapa polvo y suciedad sin esfuerzo. Lavable y reutilizable. Tu mopa rinde como el primer día.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/products/CapturadePantalla2021-05-10ala_s_14.50.54.png?v=1681614694"],
-      "variants": [
-        { "id": "v-mopa-1", "title": "1 unidad", "price": 15.0, "available": true, "sku": "MOPAx1" },
-        { "id": "v-mopa-3", "title": "Set de 3 unidades", "price": 39.0, "available": true, "sku": "MOPAx3" },
-        { "id": "v-mopa-5", "title": "Set de 5 unidades", "price": 60.0, "available": true, "sku": "MOPAx5" }
-      ]
-    },
-    {
-      "id": "Atomizador Perfume 8ml",
-      "title": "Atomizador Recargable de Perfume 8 ml",
-      "type": "Accesorios",
-      "desc": "Lleva tu perfume favorito a todas partes sin derrames. Sistema 'pump to fill' que rellena en segundos. Compacto, elegante y práctico para el bolso.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/products/Atomizadores.jpg?v=1681611350"],
-      "variants": [{ "id": "v-atomizador", "title": "Default", "price": 49.0, "available": true, "sku": "161131010" }]
-    },
-    {
-      "id": "Aro Luz Led",
-      "title": "Aro de Luz LED con Soporte y Micrófono",
-      "type": "Tecnología",
-      "desc": "Ilumina tus videos y fotos como un profesional. 3 tonos de luz ajustables + soporte de celular y micrófono. Ideal para creadores, clases y videollamadas.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/products/aroledcelularconbase7.jpg?v=1681615201"],
-      "variants": [{ "id": "v-aroled", "title": "Default", "price": 55.0, "available": true, "sku": "8126196" }]
-    },
-    {
-      "id": "Adaptador Bluetooth 5.0",
-      "title": "Adaptador Bluetooth 5.0 USB para PC / Laptop",
-      "type": "Tecnología",
-      "desc": "Conecta audífonos, parlantes o mouse inalámbricos a tu PC al instante. Plug and play, sin configuraciones. Bluetooth 5.0 estable y de largo alcance.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/products/ac1eb0fc616b1c1b83679dbdff46a4e8-zoom.jpg?v=1681615292"],
-      "variants": [{ "id": "v-bluetooth", "title": "Default", "price": 55.0, "available": true, "sku": "21319286" }]
-    },
-    {
-      "id": "HollowHat Gorra Verano",
-      "title": "HollowHat™ — Gorra de Verano para Mujer",
-      "type": "Accesorios",
-      "desc": "Protégete del sol con estilo y frescura. Tejido transpirable y talla única ajustable. El accesorio perfecto para la playa y la ciudad.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/products/S91c7db2536e24802b12cf950051db116K.jpg?v=1681611271"],
-      "variants": [
-        { "id": "v-gorra-beige", "title": "Beige", "price": 89.0, "available": true, "sku": "HAT-BEI" },
-        { "id": "v-gorra-gris", "title": "Gris", "price": 89.0, "available": true, "sku": "HAT-GRI" },
-        { "id": "v-gorra-negro", "title": "Negro", "price": 89.0, "available": true, "sku": "HAT-NEG" }
-      ]
-    },
-    {
-      "id": "Baby Nail Trimmer",
-      "title": "Baby Nail Trimmer — Lima de Uñas para Bebés",
-      "type": "Bebés",
-      "desc": "Corta las uñas de tu bebé de forma segura, sin riesgo de lastimarlo. 6 cabezales suaves para cada edad. Silencioso y fácil de usar incluso dormido.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/products/Untitleddesign_70.png?v=1681613232"],
-      "variants": [
-        { "id": "v-nail-celeste", "title": "Celeste", "price": 79.0, "available": true, "sku": "81853137" },
-        { "id": "v-nail-rosado", "title": "Rosado", "price": 79.0, "available": true, "sku": "81853138" }
-      ]
-    },
-    {
-      "id": "Bálsamo Labial PH",
-      "title": "Bálsamo Labial — Color que Cambia con tu pH",
-      "type": "Belleza",
-      "desc": "Hidrata labios y mejillas mientras revela tu tono rosado único. Apto para todo tipo de piel. Color natural que dura y se adapta a ti.",
-      "images": ["https://cdn.shopify.com/s/files/1/0747/8093/4439/files/Untitleddesign-2023-09-05T150121.032_01d9cdaf-91e3-45d4-bcaf-a4b19b6ca23b.png?v=1693946143"],
-      "variants": [{ "id": "v-balsamo", "title": "Default", "price": 69.0, "available": true, "sku": "657464164981" }]
     }
   ]
 }
