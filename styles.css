@@ -125,7 +125,21 @@ body { padding-bottom: 90px; }
   overflow: hidden;
   min-height: 34px;
 }
-.card-price { font-size: 15px; font-weight: 700; color: var(--wa-teal); }
+.card-desc {
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Precio antes / después */
+.price { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+.price-old { font-size: 12.5px; color: var(--muted); text-decoration: line-through; }
+.price-now { font-size: 16px; font-weight: 700; color: var(--wa-teal); }
 .card select {
   width: 100%;
   font-size: 12.5px;
@@ -263,3 +277,37 @@ body { padding-bottom: 90px; }
 }
 .send-btn:active { transform: scale(0.99); }
 .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- Detalle del producto ---------- */
+.detail-body { overflow-y: auto; padding: 0 0 8px; flex: 1; }
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  background: #f0f2f4;
+}
+.carousel::-webkit-scrollbar { display: none; }
+.carousel img {
+  flex: 0 0 100%;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  scroll-snap-align: center;
+}
+.carousel-dots { display: flex; justify-content: center; gap: 6px; padding: 10px 0 4px; }
+.carousel-dots .dot { width: 7px; height: 7px; border-radius: 50%; background: #cfd8dc; transition: background 0.2s; }
+.carousel-dots .dot.active { background: var(--wa-teal); }
+
+.detail-title { font-size: 18px; line-height: 1.3; margin: 12px 18px 8px; }
+.detail-desc { font-size: 14px; line-height: 1.5; color: #3b4a54; margin: 0 18px 12px; }
+.detail-body .price { margin: 0 18px; }
+.ship-note { margin: 8px 18px 0; font-size: 13px; color: var(--wa-light); font-weight: 600; }
+.detail-label { display: block; margin: 16px 18px 6px; font-size: 13px; color: var(--muted); }
+.detail-variant { margin: 0 18px; width: calc(100% - 36px); font-size: 14px; padding: 10px; border: 1px solid var(--border); border-radius: 9px; background: #fff; }
+
+.detail-foot { display: flex; align-items: center; gap: 12px; }
+.detail-foot .send-btn { flex: 1; }
+.detail-stepper .stepper { width: 132px; border: 1px solid var(--border); }
+.detail-stepper .stepper button, .detail-stepper .stepper span { color: var(--wa-teal); }
+.detail-stepper .stepper { background: #fff; }

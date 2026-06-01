@@ -2,11 +2,33 @@
 
 Catálogo web que se le envía al cliente **después** de confirmar el pedido (vía iConfly u otra asesora). El cliente:
 
-1. Abre el link y ve los productos con foto y precio, **igual que el catálogo de WhatsApp Business**.
-2. **Agrega al carrito** lo que quiera y elige la **cantidad** de cada producto.
-3. Con **un solo clic** nos envía el pedido por **WhatsApp** (mensaje ya armado, no tiene que escribir nada).
+1. Abre el link y ve los productos con foto, reseña y precio, **igual que el catálogo de WhatsApp Business**.
+2. Toca un producto para ver el **detalle**: carrusel de hasta **5 imágenes**, **reseña vendedora** y precio.
+3. **Agrega al carrito** lo que quiera y elige la **cantidad** de cada producto.
+4. Con **un solo clic** nos envía el pedido por **WhatsApp** (mensaje ya armado, no tiene que escribir nada).
 
 Sin PDF, sin que el cliente tenga que redactar su pedido. Lo más práctico posible.
+
+### Reglas del catálogo (configuradas)
+
+- **Descuento del 25%** aplicado a todos los precios: se muestra el precio original ~~tachado~~ y el precio con descuento.
+- **Envío gratis** (ya incluido en ese 25%).
+- Los productos **agotados se ocultan** automáticamente (no aparecen).
+- **No** se piden datos del cliente ni hay link por cliente: es un **link genérico** para todos.
+- **Sin** cantidad mínima ni máxima.
+- El pedido siempre llega al **mismo número** de WhatsApp.
+- El mensaje incluye el **SKU** de cada producto para despachar más rápido. Ejemplo:
+
+  ```
+  ¡Hola! 👋 Quiero confirmar mi pedido:
+
+  • 2x Ashwagandha KSM-66 (120 cáps.) [KSM66-120] — S/ 283.50
+  • 1x Aceite Corporal Magic™ 100 ml [93539554] — S/ 96.75
+
+  *Total: S/ 380.25*
+  (Precios con 25% de descuento aplicado)
+  Envío gratis incluido 🎉
+  ```
 
 ## Cómo funciona (resumen técnico)
 
@@ -20,11 +42,17 @@ Abre **`config.js`** y completa:
 
 | Campo | Qué es |
 |-------|--------|
-| `storeName` | Nombre que aparece en la cabecera. |
+| `storeName` | Nombre de la tienda (cabecera). |
+| `headline` | Título del catálogo, ej. "Acceso exclusivo". |
+| `subtitle` | Subtítulo, ej. "Primera compra · 25% OFF + envío gratis". |
 | `whatsappNumber` | **Número del negocio** que recibe los pedidos. Solo dígitos, con código de país. Perú: `51` + número (ej. `51987654321`). |
+| `discountPercent` | Descuento aplicado a todos los precios (ej. `25`). El envío ya va incluido aquí. |
+| `shippingNote` | Texto de envío que se muestra y se agrega al pedido. |
 | `shopifyDomain` | (Opcional) Dominio de la tienda, ej. `kenku.pe`. |
 | `storefrontToken` | (Opcional) Token público de la Storefront API. |
 | `orderGreeting` | Texto inicial del mensaje del pedido. |
+
+> **Reseñas e imágenes:** cuando se conecta la Storefront API, la reseña sale de la *descripción* del producto en Shopify (recortada) y las imágenes son las primeras 5 del producto. Para reseñas "supervendedoras" de 3 líneas, edita la descripción del producto en Shopify o usa el catálogo de muestra como guía.
 
 > ⚠️ Lo mínimo para que funcione: poner tu `whatsappNumber`. Con eso ya opera usando el catálogo de muestra.
 

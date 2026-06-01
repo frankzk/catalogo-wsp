@@ -27,14 +27,17 @@ const QUERY = `query($cursor: String) {
   products(first: 100, after: $cursor, query: "status:active") {
     pageInfo { hasNextPage endCursor }
     edges { node {
-      title productType
-      featuredMedia { preview { image { url } } }
+      title productType description
+      media(first: 5) { edges { node { ... on MediaImage { image { url } } } } }
       variants(first: 50) { edges { node {
-        id title price availableForSale
+        id title sku price availableForSale
       } } }
     } }
   }
 }`;
+
+const strip = (s) => String(s || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+const shorten = (s, n) => (s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s);
 
 async function gql(cursor) {
   const res = await fetch(endpoint, {
@@ -65,14 +68,19 @@ async function main() {
           title: v.title === "Default Title" ? "Default" : v.title,
           price: parseFloat(v.price || 0),
           available: v.availableForSale,
+          sku: v.sku || "",
         }))
-        .filter((v) => v.available);
+        .filter((v) => v.available && v.price > 0);
       if (!variants.length) continue;
+      const images = node.media.edges
+        .map((e) => e.node?.image?.url)
+        .filter(Boolean);
       products.push({
         id: node.title,
         title: node.title,
         type: node.productType || "Otros",
-        image: node.featuredMedia?.preview?.image?.url || "",
+        desc: shorten(strip(node.description), 220),
+        images,
         variants,
       });
     }

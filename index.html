@@ -15,7 +15,7 @@
         <div class="store-avatar" id="storeAvatar">K</div>
         <div class="store-meta">
           <h1 id="storeName">Catálogo</h1>
-          <span class="store-sub">Catálogo de productos</span>
+          <span class="store-sub" id="storeSub">Catálogo de productos</span>
         </div>
       </div>
       <div class="search-wrap">
@@ -42,6 +42,12 @@
       <span class="cart-bar-label">Ver pedido</span>
       <span class="cart-bar-total" id="cartBarTotal">S/ 0.00</span>
     </button>
+
+    <!-- Hoja de detalle del producto (carrusel + reseña) -->
+    <div id="detail" class="sheet" hidden>
+      <div class="sheet-backdrop"></div>
+      <div class="sheet-panel" id="detailPanel" role="dialog" aria-modal="true" aria-label="Detalle del producto"></div>
+    </div>
 
     <!-- Hoja del carrito -->
     <div id="sheet" class="sheet" hidden>

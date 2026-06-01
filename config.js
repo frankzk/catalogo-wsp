@@ -6,14 +6,24 @@
  * por eso es seguro dejarlo en el navegador. NO uses aquí el token de Admin API.
  */
 window.CATALOG_CONFIG = {
-  // Nombre de la tienda que aparece en la cabecera.
+  // Nombre de la tienda (aparece en la cabecera).
   storeName: "Kenku Perú",
+
+  // Título y subtítulo del catálogo (sensación de acceso exclusivo).
+  headline: "Acceso exclusivo",
+  subtitle: "Primera compra · 25% OFF + envío gratis",
 
   // Número de WhatsApp del negocio AL QUE llega el pedido.
   // Formato internacional, solo dígitos (sin +, espacios ni guiones).
   // Perú = 51 + número. Ejemplo: 51987654321
   // ⚠️ REEMPLAZA este valor por tu número real.
   whatsappNumber: "51999999999",
+
+  // Descuento aplicado a TODOS los precios (en %). El envío ya va incluido aquí.
+  discountPercent: 25,
+
+  // Nota de envío que se muestra y se incluye en el pedido.
+  shippingNote: "Envío gratis incluido 🎉",
 
   // ---- Conexión en vivo con Shopify (opcional pero recomendado) ----
   // Si completas estos dos campos, el catálogo se carga EN VIVO desde Shopify
