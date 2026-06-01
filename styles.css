@@ -313,8 +313,53 @@ body { padding-bottom: 90px; }
 .detail-desc { font-size: 14px; line-height: 1.5; color: #3b4a54; margin: 0 18px 12px; }
 .detail-body .price { margin: 0 18px; }
 .ship-note { margin: 8px 18px 0; font-size: 13px; color: var(--wa-light); font-weight: 600; }
-.detail-label { display: block; margin: 16px 18px 6px; font-size: 13px; color: var(--muted); }
-.detail-variant { margin: 0 18px; width: calc(100% - 36px); font-size: 14px; padding: 10px; border: 1px solid var(--border); border-radius: 9px; background: #fff; }
+.detail-label { display: block; margin: 16px 18px 8px; font-size: 13px; color: var(--muted); font-weight: 600; }
+
+/* Opciones/variantes visibles (no desplegable) */
+.variant-options { display: flex; flex-direction: column; gap: 9px; margin: 0 18px; }
+.variant-option {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.variant-option.selected { border-color: var(--wa-teal); background: #f2fbf9; }
+.vo-radio {
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #c4ccd1;
+  position: relative;
+}
+.variant-option.selected .vo-radio { border-color: var(--wa-teal); }
+.variant-option.selected .vo-radio::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--wa-teal);
+}
+.vo-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.vo-title { font-size: 14px; font-weight: 600; line-height: 1.25; }
+.vo-badge {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--wa-light);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.vo-price { flex: 0 0 auto; text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+.vo-price .price-old { font-size: 12px; }
+.vo-price .price-now { font-size: 16px; font-weight: 700; color: var(--wa-teal); }
 
 .detail-foot { display: flex; align-items: center; gap: 12px; }
 .detail-foot .send-btn { flex: 1; }

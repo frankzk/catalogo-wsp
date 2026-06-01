@@ -183,6 +183,26 @@
     return `<div class="price"><span class="price-now">${money(pr.pay)}</span></div>`;
   }
 
+  // Tarjeta de opción/variante visible (reemplaza al desplegable). El título puede
+  // traer una etiqueta tras " · " (ej. "... · Más vendido") que se muestra como pill.
+  function optionRowHtml(p, v, selected) {
+    const pr = priced(p, v);
+    const parts = v.title.split(" · ");
+    const name = parts[0];
+    const badge = parts[1] || "";
+    return `<button type="button" class="variant-option${selected ? " selected" : ""}" data-id="${v.id}">
+      <span class="vo-radio" aria-hidden="true"></span>
+      <span class="vo-main">
+        <span class="vo-title">${escapeHtml(name)}</span>
+        ${badge ? `<span class="vo-badge">${escapeHtml(badge)}</span>` : ""}
+      </span>
+      <span class="vo-price">
+        ${pr.old && pr.old > pr.pay ? `<span class="price-old">${money(pr.old)}</span>` : ""}
+        <span class="price-now">${money(pr.pay)}</span>
+      </span>
+    </button>`;
+  }
+
   /* ---------- Grilla ---------- */
   function renderGrid() {
     const grid = $("#grid");
@@ -262,14 +282,14 @@
         ${dots}
         <h3 class="detail-title">${escapeHtml(p.title)}</h3>
         ${p.desc ? `<p class="detail-desc">${escapeHtml(p.desc)}</p>` : ""}
-        <div id="detailPrice">${priceBlock(priced(p, p.variants[0]))}</div>
+        ${p.variants.length > 1 ? "" : `<div id="detailPrice">${priceBlock(priced(p, p.variants[0]))}</div>`}
         ${CFG.shippingNote ? `<p class="ship-note">${escapeHtml(CFG.shippingNote)}</p>` : ""}
         ${
           p.variants.length > 1
             ? `<label class="detail-label">Elige una opción:</label>
-               <select class="detail-variant">
-                 ${p.variants.map((v) => `<option value="${v.id}">${escapeHtml(v.title)} — ${money(priced(p, v).pay)}</option>`).join("")}
-               </select>`
+               <div class="variant-options">
+                 ${p.variants.map((v, i) => optionRowHtml(p, v, i === 0)).join("")}
+               </div>`
             : ""
         }
       </div>
@@ -286,14 +306,15 @@
       });
     }
 
-    const sel = panel.querySelector(".detail-variant");
-    if (sel)
-      sel.onchange = () => {
-        selVariant = sel.value;
-        const v = p.variants.find((x) => x.id === selVariant);
-        $("#detailPrice", panel).innerHTML = priceBlock(priced(p, v));
+    // Opciones visibles (en vez de desplegable): seleccionar resalta la tarjeta.
+    const opts = panel.querySelectorAll(".variant-option");
+    opts.forEach((btn) => {
+      btn.onclick = () => {
+        selVariant = btn.dataset.id;
+        opts.forEach((b) => b.classList.toggle("selected", b === btn));
         drawDetailFoot();
       };
+    });
 
     function drawDetailFoot() {
       const foot = $("#detailFoot", panel);
