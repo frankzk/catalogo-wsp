@@ -131,8 +131,8 @@
     const r = (n) => Math.round(n * 100) / 100;
     return [
       { id: baseId + "__1", title: "1 unidad", price: r(unit), available: true, sku },
-      { id: baseId + "__3x2", title: "3 unidades (3x2) · Más popular", price: r(unit * 2), listPrice: r(unit * 3), available: true, sku },
-      { id: baseId + "__5x3", title: "5 unidades (5x3) · Mejor precio", price: r(unit * 3), listPrice: r(unit * 5), available: true, sku },
+      { id: baseId + "__3x2", title: "2 unidades + 1 Gratis (Total 3 und.) · Más vendido", price: r(unit * 2), listPrice: r(unit * 3), available: true, sku },
+      { id: baseId + "__5x3", title: "3 unidades + 2 Gratis (Total 5 und.) · Oferta única", price: r(unit * 3), listPrice: r(unit * 5), available: true, sku },
     ];
   }
 
