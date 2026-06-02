@@ -335,6 +335,20 @@ body { padding-bottom: 90px; }
 .send-btn:active { transform: scale(0.99); }
 .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Enlace discreto para seguir comprando */
+.continue-link {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 12px 6px 4px;
+  cursor: pointer;
+  text-align: center;
+}
+.continue-link:active { color: var(--wa-teal); }
+
 /* ---------- Detalle del producto ---------- */
 .detail-body { overflow-y: auto; overscroll-behavior: contain; padding: 0 0 8px; flex: 1; }
 .carousel {

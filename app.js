@@ -548,6 +548,7 @@
     $("#search").addEventListener("input", debounce((e) => { query = e.target.value; renderGrid(); }, 180));
     $("#cartBar").addEventListener("click", openSheet);
     $("#sendBtn").addEventListener("click", sendOrder);
+    $("#continueBtn").addEventListener("click", closeSheet);
     $("#sheet").querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeSheet));
 
     // Deslizar hacia abajo para cerrar (detalle y carrito).
