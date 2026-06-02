@@ -63,7 +63,8 @@
 
   async function loadFromShopify() {
     const domain = CFG.shopifyDomain.replace(/^https?:\/\//, "").replace(/\/$/, "");
-    const endpoint = `https://${domain}/api/2024-10/graphql.json`;
+    const version = CFG.shopifyApiVersion || "2025-10";
+    const endpoint = `https://${domain}/api/${version}/graphql.json`;
     const q = `query($cursor: String) {
       products(first: 100, after: $cursor, query: "available_for_sale:true") {
         pageInfo { hasNextPage endCursor }

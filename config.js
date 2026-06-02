@@ -50,8 +50,9 @@ window.CATALOG_CONFIG = {
   //   "Desarrollar apps" → Crear una app → Configurar Storefront API →
   //   marcar "unauthenticated_read_product_listings" (y _read_product_inventory)
   //   → Instalar → copiar el "Storefront API access token".
-  shopifyDomain: "", // ej: "mireva.cr" o "tu-tienda.myshopify.com"
-  storefrontToken: "", // token público de Storefront API
+  shopifyDomain: "mireva-costa-rica.myshopify.com", // dominio .myshopify.com de la tienda
+  storefrontToken: "40315a42f90090a40e3476d48864d777", // token PÚBLICO de Storefront API (solo lectura)
+  shopifyApiVersion: "2025-10", // versión de la Storefront API
 
   // Mensaje inicial del pedido enviado por WhatsApp.
   orderGreeting: "¡Hola! 👋 Quiero confirmar mi pedido:",
