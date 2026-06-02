@@ -56,4 +56,10 @@ window.CATALOG_CONFIG = {
 
   // Mensaje inicial del pedido enviado por WhatsApp.
   orderGreeting: "¡Hola! 👋 Quiero confirmar mi pedido:",
+
+  // ---- Métricas (opcional) ----
+  // Pega aquí la URL del "Web App" de Google Apps Script para registrar
+  // vistas, agregados al carrito, conversiones y pedidos en una Hoja de Google.
+  // Si lo dejas vacío, no se registra nada (el catálogo funciona igual).
+  metricsUrl: "",
 };

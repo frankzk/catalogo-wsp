@@ -306,6 +306,7 @@
 
   /* ---------- Detalle del producto (carrusel + reseña) ---------- */
   function openDetail(p) {
+    track("view_product", { id: p.title });
     let selVariant = p.variants[0].id;
     const panel = $("#detailPanel");
     const dots = p.images.length > 1
@@ -389,6 +390,7 @@
     entry.qty += delta;
     if (entry.qty <= 0) cart.delete(variantId);
     else cart.set(variantId, entry);
+    if (delta > 0) track("add_to_cart", { id: product.title, option: variant.title, price: priced(product, variant).pay });
     updateCartUI();
     renderGrid(); // refresca steppers visibles en la grilla
   }
@@ -458,10 +460,28 @@
 
   function sendOrder() {
     if (cart.size === 0) return;
+    const items = [];
+    cart.forEach((e) => items.push({ qty: e.qty, title: e.product.title, option: e.variant.title, sku: e.variant.sku || "", price: priced(e.product, e.variant).pay }));
+    track("order", { items, total: cartTotals().total });
     const number = String(CFG.whatsappNumber || "").replace(/\D/g, "");
     const text = encodeURIComponent(buildOrderMessage());
     const url = number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;
     window.open(url, "_blank");
+  }
+
+  /* ---------- Métricas (opcional, a Google Sheets) ---------- */
+  function track(event, data) {
+    const url = CFG.metricsUrl || "";
+    if (!url) return;
+    try {
+      fetch(url, {
+        method: "POST",
+        mode: "no-cors",
+        keepalive: true,
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ event, ts: new Date().toISOString(), data: data || {} }),
+      });
+    } catch (e) { /* nunca rompe el catálogo */ }
   }
 
   /* ---------- Sanitización ---------- */
@@ -563,6 +583,7 @@
       if (!PRODUCTS.length) { setStatus("El catálogo está vacío por ahora."); return; }
       buildCategories();
       renderGrid();
+      track("view", { products: PRODUCTS.length });
     } catch (e) {
       console.error(e);
       setStatus("No se pudo cargar el catálogo. Revisa tu conexión o la configuración.", true);
