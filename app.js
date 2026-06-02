@@ -66,7 +66,7 @@
     const version = CFG.shopifyApiVersion || "2025-10";
     const endpoint = `https://${domain}/api/${version}/graphql.json`;
     const q = `query($cursor: String) {
-      products(first: 100, after: $cursor, query: "available_for_sale:true") {
+      products(first: 100, after: $cursor, sortKey: BEST_SELLING, query: "available_for_sale:true") {
         pageInfo { hasNextPage endCursor }
         edges { node {
           title productType description
@@ -123,14 +123,20 @@
   function stripHtml(s) { return String(s).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(); }
   function shorten(s, n) { return s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s; }
 
-  /* ---------- Normalización: ocultar agotados ---------- */
+  /* ---------- Normalización: ocultar agotados y ordenar ---------- */
+  const hasImage = (p) => (p.images && p.images.length && p.images[0] ? 1 : 0);
+
   function visibleProducts(list) {
-    return list
+    const cleaned = list
       .map((p) => {
         const variants = (p.variants || []).filter((v) => v.available && v.price > 0);
         return { ...p, variants, images: (p.images && p.images.length ? p.images : [p.image]).filter(Boolean) };
       })
       .filter((p) => p.variants.length > 0); // sin variantes disponibles → no se muestra
+    // Mantiene el orden de entrada (más vendidos primero desde Shopify) pero
+    // empuja los productos SIN imagen al final. sort() es estable.
+    cleaned.sort((a, b) => hasImage(b) - hasImage(a));
+    return cleaned;
   }
 
   // Precio que paga el cliente y precio "antes" (tachado) para una variante.
