@@ -70,7 +70,7 @@
         pageInfo { hasNextPage endCursor }
         edges { node {
           title productType description
-          images(first: 5) { edges { node { url } } }
+          images(first: 4) { edges { node { url } } }
           variants(first: 25) { edges { node {
             id title sku availableForSale
             price { amount currencyCode }

@@ -28,7 +28,7 @@ const QUERY = `query($cursor: String) {
     pageInfo { hasNextPage endCursor }
     edges { node {
       title productType description
-      media(first: 5) { edges { node { ... on MediaImage { image { url } } } } }
+      media(first: 4) { edges { node { ... on MediaImage { image { url } } } } }
       variants(first: 50) { edges { node {
         id title sku price availableForSale
       } } }
