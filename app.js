@@ -95,29 +95,45 @@
       if (json.errors) throw new Error(JSON.stringify(json.errors));
       const conn = json.data.products;
       for (const { node } of conn.edges) {
-        const variants = node.variants.edges.map(({ node: v }) => {
+        const realVariants = node.variants.edges.map(({ node: v }) => {
           if (v.price && v.price.currencyCode) CURRENCY = v.price.currencyCode;
           return {
             id: v.id,
-            title: v.title === "Default Title" ? "Default" : v.title,
             price: parseFloat(v.price ? v.price.amount : 0),
             available: v.availableForSale,
             sku: v.sku || "",
           };
         });
+        // Variante base = la disponible más barata (precio de 1 unidad).
+        const base = realVariants
+          .filter((v) => v.available && v.price > 0)
+          .sort((a, b) => a.price - b.price)[0];
+        if (!base) continue; // sin precio/stock válido → no se muestra
         out.push({
           id: node.title,
           title: node.title,
           type: node.productType || "Otros",
           desc: shorten(stripHtml(node.description || ""), 220),
           images: node.images.edges.map((e) => e.node.url),
-          variants,
+          noDiscount: true, // los packs ya traen su oferta
+          variants: bundleVariants(base.id, base.price, base.sku),
         });
       }
       if (!conn.pageInfo.hasNextPage) break;
       cursor = conn.pageInfo.endCursor;
     }
     return out;
+  }
+
+  // Arma las 3 opciones de compra a partir del precio de 1 unidad (P):
+  // 1 unidad = P · 3x2 = paga 2P (tachado 3P) · 5x3 = paga 3P (tachado 5P).
+  function bundleVariants(baseId, unit, sku) {
+    const r = (n) => Math.round(n * 100) / 100;
+    return [
+      { id: baseId + "__1", title: "1 unidad", price: r(unit), available: true, sku },
+      { id: baseId + "__3x2", title: "3 unidades (3x2) · Más popular", price: r(unit * 2), listPrice: r(unit * 3), available: true, sku },
+      { id: baseId + "__5x3", title: "5 unidades (5x3) · Mejor precio", price: r(unit * 3), listPrice: r(unit * 5), available: true, sku },
+    ];
   }
 
   function stripHtml(s) { return String(s).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(); }
