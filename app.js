@@ -203,6 +203,26 @@
     </button>`;
   }
 
+  // Sellos de confianza (pago contra entrega, envío gratis, garantía, devolución).
+  function trustBadgesHtml() {
+    const list = CFG.trustBadges || [];
+    if (!list.length) return "";
+    return `<div class="trust-badges">${list
+      .map(
+        (b) => `<div class="trust-badge">
+          <span class="tb-icon">${b.icon || "✅"}</span>
+          <span class="tb-text"><strong>${escapeHtml(b.title || "")}</strong>${b.sub ? `<span>${escapeHtml(b.sub)}</span>` : ""}</span>
+        </div>`
+      )
+      .join("")}</div>`;
+  }
+
+  // Texto compacto de confianza para tiras (cabecera / carrito).
+  function trustStripText() {
+    const list = CFG.trustBadges || [];
+    return list.map((b) => `${b.icon || ""} ${b.title || ""}`.trim()).join("  ·  ");
+  }
+
   /* ---------- Grilla ---------- */
   function renderGrid() {
     const grid = $("#grid");
@@ -283,7 +303,6 @@
         <h3 class="detail-title">${escapeHtml(p.title)}</h3>
         ${p.desc ? `<p class="detail-desc">${escapeHtml(p.desc)}</p>` : ""}
         ${p.variants.length > 1 ? "" : `<div id="detailPrice">${priceBlock(priced(p, p.variants[0]))}</div>`}
-        ${CFG.shippingNote ? `<p class="ship-note">${escapeHtml(CFG.shippingNote)}</p>` : ""}
         ${
           p.variants.length > 1
             ? `<label class="detail-label">Elige una opción:</label>
@@ -292,6 +311,7 @@
                </div>`
             : ""
         }
+        ${trustBadgesHtml()}
       </div>
       <div class="sheet-foot">
         <div class="detail-foot" id="detailFoot"></div>
@@ -409,6 +429,7 @@
     cart.forEach((e) => { if (!(e.product && e.product.noDiscount)) anyDiscounted = true; });
     if (DISCOUNT > 0 && anyDiscounted) lines.push(`(Precios con ${DISCOUNT}% de descuento aplicado)`);
     if (CFG.shippingNote) lines.push(CFG.shippingNote);
+    if (CFG.paymentNote) lines.push(CFG.paymentNote);
     return lines.join("\n");
   }
 
@@ -492,6 +513,14 @@
     }
     if (CFG.subtitle) $("#storeSub").textContent = CFG.subtitle;
     document.title = (CFG.storeName ? CFG.storeName + " — " : "") + (CFG.headline || "Catálogo");
+
+    // Tiras de confianza (cabecera y carrito).
+    const strip = trustStripText();
+    if (strip) {
+      $("#trustStrip").textContent = strip;
+      $("#trustStrip").hidden = false;
+      $("#cartTrust").textContent = strip;
+    }
 
     $("#search").addEventListener("input", debounce((e) => { query = e.target.value; renderGrid(); }, 180));
     $("#cartBar").addEventListener("click", openSheet);

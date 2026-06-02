@@ -26,8 +26,20 @@ window.CATALOG_CONFIG = {
   // Los packs con oferta propia usan "noDiscount": true en data/products.json.
   discountPercent: 0,
 
-  // Nota de envío que se muestra y se incluye en el pedido.
+  // Nota de envío que se incluye en el pedido de WhatsApp.
   shippingNote: "Envío gratis a todo Costa Rica 🎉",
+
+  // Nota de pago contra entrega que se incluye en el pedido de WhatsApp.
+  paymentNote: "Pago contra entrega: pagas al recibir 📦",
+
+  // Sellos de confianza (se muestran en el detalle del producto y en una tira).
+  // Edita libremente icono/título/subtítulo.
+  trustBadges: [
+    { icon: "💵", title: "Pago contra entrega", sub: "Pagas al recibir" },
+    { icon: "🚚", title: "Envío gratis", sub: "A todo Costa Rica" },
+    { icon: "🛡️", title: "Garantía de calidad", sub: "Producto garantizado" },
+    { icon: "↩️", title: "Devolución fácil", sub: "Compra sin riesgo" },
+  ],
 
   // ---- Conexión en vivo con Shopify (opcional pero recomendado) ----
   // Si completas estos dos campos, el catálogo se carga EN VIVO desde Shopify
