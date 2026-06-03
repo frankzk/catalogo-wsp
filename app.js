@@ -18,26 +18,18 @@
   let query = "";
 
   /* ---------- Utilidades ---------- */
-  // Formato de Costa Rica: miles con punto, decimales con coma. Ej: ₡16.425,00
+  // Formato de Costa Rica, SIN decimales (enteros). Miles con punto. Ej: ₡16.425
   const CURRENCY_SYMBOL = { CRC: "₡", PEN: "S/ ", USD: "$", MXN: "$", COP: "$", EUR: "€" };
   const money = (n) => {
-    const v = Number(n) || 0;
-    const sign = v < 0 ? "-" : "";
-    const [intPart, dec] = Math.abs(v).toFixed(2).split(".");
-    const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    const sym = CURRENCY_SYMBOL[CURRENCY] || CURRENCY + " ";
-    return `${sign}${sym}${grouped},${dec}`;
-  };
-  // Igual que money pero sin decimales. Ej: ₡16.425
-  const moneyShort = (n) => {
     const v = Math.round(Number(n) || 0);
     const grouped = String(Math.abs(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     const sym = CURRENCY_SYMBOL[CURRENCY] || CURRENCY + " ";
     return `${v < 0 ? "-" : ""}${sym}${grouped}`;
   };
+  const moneyShort = money;
 
-  // Precio con descuento aplicado.
-  const final = (price) => Math.round(price * (1 - DISCOUNT / 100) * 100) / 100;
+  // Precio con descuento aplicado, redondeado a entero.
+  const final = (price) => Math.round(price * (1 - DISCOUNT / 100));
 
   const debounce = (fn, ms) => {
     let t;
