@@ -69,20 +69,22 @@
     const domain = CFG.shopifyDomain.replace(/^https?:\/\//, "").replace(/\/$/, "");
     const version = CFG.shopifyApiVersion || "2025-10";
     const endpoint = `https://${domain}/api/${version}/graphql.json`;
-    const q = `query($cursor: String) {
+    // El campo de inventario requiere permiso; si el token no lo tiene, reintentamos sin él.
+    const buildQuery = (withQty) => `query($cursor: String) {
       products(first: 100, after: $cursor, sortKey: BEST_SELLING, query: "available_for_sale:true") {
         pageInfo { hasNextPage endCursor }
         edges { node {
           title productType description
           images(first: 4) { edges { node { url } } }
           variants(first: 25) { edges { node {
-            id title sku availableForSale quantityAvailable
+            id title sku availableForSale ${withQty ? "quantityAvailable" : ""}
             price { amount currencyCode }
           } } }
         } }
       }
     }`;
 
+    let withQty = true; // intentamos con inventario primero
     const out = [];
     let cursor = null;
     for (let page = 0; page < 20; page++) {
@@ -92,11 +94,15 @@
           "Content-Type": "application/json",
           "X-Shopify-Storefront-Access-Token": CFG.storefrontToken,
         },
-        body: JSON.stringify({ query: q, variables: { cursor } }),
+        body: JSON.stringify({ query: buildQuery(withQty), variables: { cursor } }),
       });
       if (!res.ok) throw new Error("Shopify HTTP " + res.status);
       const json = await res.json();
-      if (json.errors) throw new Error(JSON.stringify(json.errors));
+      if (json.errors) {
+        // Si falla por el campo de inventario, reintenta sin él (no rompe el catálogo).
+        if (withQty) { withQty = false; page--; continue; }
+        throw new Error(JSON.stringify(json.errors));
+      }
       const conn = json.data.products;
       for (const { node } of conn.edges) {
         const variants = node.variants.edges.map(({ node: v }) => {
