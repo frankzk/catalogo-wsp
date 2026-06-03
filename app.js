@@ -495,7 +495,7 @@
       const variantLabel = e.variant.title !== "Default" ? ` (${e.variant.title})` : "";
       const sku = e.variant.sku ? `  ·  SKU ${e.variant.sku}` : "";
       const lineTotal = e.qty * priced(e.product, e.variant).pay;
-      lines.push(`• ${e.qty}x ${e.product.title}${variantLabel} — ${moneyShort(lineTotal)}${sku}`);
+      lines.push(`✔️ ${e.qty}x ${e.product.title}${variantLabel} — ${moneyShort(lineTotal)}${sku}`);
     });
     lines.push("");
     lines.push(`*Total: ${money(cartTotals().total)}*`);
