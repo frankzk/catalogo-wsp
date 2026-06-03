@@ -23,7 +23,7 @@ window.CATALOG_CONFIG = {
   whatsappNumber: "51918100477",
 
   // Descuento global aplicado a los precios (en %). Se muestra precio original tachado + rebajado.
-  discountPercent: 25,
+  discountPercent: 30,
 
   // Nota de envío que se incluye en el pedido de WhatsApp.
   shippingNote: "Envío gratis a todo Costa Rica 🎉",
