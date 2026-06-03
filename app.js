@@ -28,6 +28,13 @@
     const sym = CURRENCY_SYMBOL[CURRENCY] || CURRENCY + " ";
     return `${sign}${sym}${grouped},${dec}`;
   };
+  // Igual que money pero sin decimales. Ej: ₡16.425
+  const moneyShort = (n) => {
+    const v = Math.round(Number(n) || 0);
+    const grouped = String(Math.abs(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const sym = CURRENCY_SYMBOL[CURRENCY] || CURRENCY + " ";
+    return `${v < 0 ? "-" : ""}${sym}${grouped}`;
+  };
 
   // Precio con descuento aplicado.
   const final = (price) => Math.round(price * (1 - DISCOUNT / 100) * 100) / 100;
@@ -494,9 +501,9 @@
     lines.push("");
     cart.forEach((e) => {
       const variantLabel = e.variant.title !== "Default" ? ` (${e.variant.title})` : "";
-      const sku = e.variant.sku ? ` [${e.variant.sku}]` : "";
+      const sku = e.variant.sku ? `  ·  SKU ${e.variant.sku}` : "";
       const lineTotal = e.qty * priced(e.product, e.variant).pay;
-      lines.push(`• ${e.qty}x ${e.product.title}${variantLabel}${sku} — ${money(lineTotal)}`);
+      lines.push(`• ${e.qty}x ${e.product.title}${variantLabel} — ${moneyShort(lineTotal)}${sku}`);
     });
     lines.push("");
     lines.push(`*Total: ${money(cartTotals().total)}*`);
