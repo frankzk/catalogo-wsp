@@ -18,12 +18,16 @@
   let query = "";
 
   /* ---------- Utilidades ---------- */
-  const money = (n) =>
-    new Intl.NumberFormat(CFG.locale || "es-PE", {
-      style: "currency",
-      currency: CURRENCY,
-      minimumFractionDigits: 2,
-    }).format(n || 0);
+  // Formato de Costa Rica: miles con punto, decimales con coma. Ej: ₡16.425,00
+  const CURRENCY_SYMBOL = { CRC: "₡", PEN: "S/ ", USD: "$", MXN: "$", COP: "$", EUR: "€" };
+  const money = (n) => {
+    const v = Number(n) || 0;
+    const sign = v < 0 ? "-" : "";
+    const [intPart, dec] = Math.abs(v).toFixed(2).split(".");
+    const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const sym = CURRENCY_SYMBOL[CURRENCY] || CURRENCY + " ";
+    return `${sign}${sym}${grouped},${dec}`;
+  };
 
   // Precio con descuento aplicado.
   const final = (price) => Math.round(price * (1 - DISCOUNT / 100) * 100) / 100;
@@ -490,11 +494,10 @@
     });
     lines.push("");
     lines.push(`*Total: ${money(cartTotals().total)}*`);
-    let anyDiscounted = false;
-    cart.forEach((e) => { if (!(e.product && e.product.noDiscount)) anyDiscounted = true; });
-    if (DISCOUNT > 0 && anyDiscounted) lines.push(`(Precios con ${DISCOUNT}% de descuento aplicado)`);
-    if (CFG.shippingNote) lines.push(CFG.shippingNote);
-    if (CFG.paymentNote) lines.push(CFG.paymentNote);
+    lines.push("");
+    if (DISCOUNT > 0) lines.push(`✅ *${DISCOUNT}% de dscto en TODO EL CATÁLOGO* sin restricciones.`);
+    lines.push(`✅ *Envío gratis* a todo *Costa Rica* 🎉`);
+    lines.push(`✅ *Pago contra entrega:* Pagas al recibir 📦`);
     return lines.join("\n");
   }
 

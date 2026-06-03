@@ -54,7 +54,7 @@ window.CATALOG_CONFIG = {
   shopifyApiVersion: "2025-10", // versión de la Storefront API
 
   // Mensaje inicial del pedido enviado por WhatsApp.
-  orderGreeting: "¡Hola! 👋 Quiero confirmar mi pedido:",
+  orderGreeting: "¡Hola! 👋 Quiero agregar estos productos a mi pedido:",
 
   // ---- Métricas (opcional) ----
   // Pega aquí la URL del "Web App" de Google Apps Script para registrar
