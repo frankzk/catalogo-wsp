@@ -335,6 +335,18 @@ body { padding-bottom: 90px; }
 .send-btn:active { transform: scale(0.99); }
 .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Campo de teléfono en el carrito */
+.phone-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+  margin-bottom: 12px;
+  outline: none;
+}
+.phone-input:focus { border-color: var(--wa-teal); }
+
 /* Enlace discreto para seguir comprando */
 .continue-link {
   display: block;
