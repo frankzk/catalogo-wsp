@@ -440,21 +440,14 @@
     if (DISCOUNT > 0 && anyDiscounted) lines.push(`(Precios con ${DISCOUNT}% de descuento aplicado)`);
     if (CFG.shippingNote) lines.push(CFG.shippingNote);
     if (CFG.paymentNote) lines.push(CFG.paymentNote);
-    const phone = getPhone();
-    if (phone) lines.push(`📱 Mi WhatsApp: ${phone}`);
     return lines.join("\n");
-  }
-
-  function getPhone() {
-    const el = $("#phoneInput");
-    return el ? el.value.trim() : "";
   }
 
   function sendOrder() {
     if (cart.size === 0) return;
     const items = [];
     cart.forEach((e) => items.push({ qty: e.qty, title: e.product.title, option: e.variant.title, sku: e.variant.sku || "", price: priced(e.product, e.variant).pay }));
-    track("order", { items, total: cartTotals().total, phone: getPhone() });
+    track("order", { items, total: cartTotals().total });
     const number = String(CFG.whatsappNumber || "").replace(/\D/g, "");
     const text = encodeURIComponent(buildOrderMessage());
     const url = number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;
