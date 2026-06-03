@@ -124,6 +124,51 @@
   function stripHtml(s) { return String(s).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(); }
   function shorten(s, n) { return s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s; }
 
+  /* ---------- Clasificación por categoría (criterio propio) ---------- */
+  const CATEGORY_ORDER = ["Suplementos", "Belleza", "Hogar y cocina", "Otros"];
+
+  function classify(p) {
+    const text = ((p.title || "") + " " + (p.desc || "")).toLowerCase();
+    const t = (p.type || "").toLowerCase();
+    const has = (arr) => arr.some((k) => text.includes(k));
+
+    // 1) Suplementos (ingeribles: cápsulas, gomitas, polvos, vitaminas…)
+    if (has([
+      "cápsula", "capsula", "cápsulas", "capsulas", "gomita", "gummies", "gummy",
+      "ashwagandha", "shilajit", "berberina", "ginseng", "rhodiola", "panax",
+      "creatina", "colágeno", "colageno", "biotina", "omega", "vitamina", "magnesio",
+      "melatonina", "probiótic", "probiotic", "proteína", "proteina", "suplement",
+      "resveratrol", "astaxantina", "ksm", "nad+", "nad +", "cúrcuma", "curcuma",
+      "calcio", "bcaa", "glucosa", "próstata", "prostata", "ksm-66", "mg)",
+    ])) return "Suplementos";
+
+    // 2) Belleza (piel, cabello, cosmética, cuidado personal)
+    if (has([
+      "serum", "sérum", "niacinamida", "retinol", "antiedad", "anti-edad", "antiarruga",
+      "arruga", "facial", "piel", "labial", "bálsamo", "balsamo", "maquillaje", "ceja",
+      "pestañ", "cabello", "shampoo", "champú", "champu", "acondicionador", "keratina",
+      "queratina", "rubor", "exfoliante", "perfume", "atomizador", "afeitad", "after shave",
+      "aftershave", "crema", "desodorante", "aceite corporal", "uñas", "mascarilla",
+      "glow", "manchas", "espinilla", "acné", "acne", "poros", "hidrata",
+    ])) return "Belleza";
+
+    // 3) Hogar y cocina
+    if (has([
+      "cocina", "sartén", "sarten", "mopa", "trapeador", "organizador", "air fryer",
+      "airfryer", "silicona", "basurero", "escurridor", "cera de abeja", "mueble", "auto",
+      "coche", "almohada", "almohadilla", "cable", "canasta", "velcro", "cojín", "cojin",
+      "bluetooth", "cargador", "adaptador", "aro de luz", "aro luz", "limpieza", "vajilla",
+      "taza", "botella", "termo",
+    ])) return "Hogar y cocina";
+
+    // 4) Respaldo por tipo de Shopify
+    if (t.includes("salud")) return "Suplementos";
+    if (t.includes("belleza")) return "Belleza";
+    if (t.includes("hogar") || t.includes("cocina")) return "Hogar y cocina";
+
+    return "Otros";
+  }
+
   /* ---------- Normalización: ocultar agotados y ordenar ---------- */
   const hasImage = (p) => (p.images && p.images.length && p.images[0] ? 1 : 0);
 
@@ -131,7 +176,12 @@
     const cleaned = list
       .map((p) => {
         const variants = (p.variants || []).filter((v) => v.available && v.price > 0);
-        return { ...p, variants, images: (p.images && p.images.length ? p.images : [p.image]).filter(Boolean) };
+        return {
+          ...p,
+          type: classify(p),
+          variants,
+          images: (p.images && p.images.length ? p.images : [p.image]).filter(Boolean),
+        };
       })
       .filter((p) => p.variants.length > 0); // sin variantes disponibles → no se muestra
     // Mantiene el orden de entrada (más vendidos primero desde Shopify) pero
@@ -158,7 +208,8 @@
 
   /* ---------- Categorías ---------- */
   function buildCategories() {
-    const cats = ["Todos", ...new Set(PRODUCTS.map((p) => p.type).filter(Boolean))];
+    const present = new Set(PRODUCTS.map((p) => p.type));
+    const cats = ["Todos", ...CATEGORY_ORDER.filter((c) => present.has(c))];
     const wrap = $("#categoryChips");
     wrap.innerHTML = "";
     cats.forEach((c) => {
@@ -391,6 +442,9 @@
     $("#cartBar").hidden = count === 0;
     $("#cartBarCount").textContent = count;
     $("#cartBarTotal").textContent = money(total);
+    const badge = $("#headerCartCount");
+    badge.textContent = count;
+    badge.hidden = count === 0;
     if (!$("#sheet").hidden) renderCartItems();
   }
 
@@ -552,6 +606,7 @@
 
     $("#search").addEventListener("input", debounce((e) => { query = e.target.value; renderGrid(); }, 180));
     $("#cartBar").addEventListener("click", openSheet);
+    $("#headerCart").addEventListener("click", openSheet);
     $("#sendBtn").addEventListener("click", sendOrder);
     $("#continueBtn").addEventListener("click", closeSheet);
     $("#sheet").querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeSheet));

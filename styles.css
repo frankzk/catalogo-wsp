@@ -50,6 +50,37 @@ body { padding-bottom: 90px; }
 .store-meta h1 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.2; }
 .store-sub { font-size: 12.5px; opacity: 0.8; }
 
+/* Carrito en la cabecera (esquina superior derecha) */
+.header-cart {
+  margin-left: auto;
+  position: relative;
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 4px;
+  cursor: pointer;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+.header-cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--wa-light);
+  color: #053b32;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
 .search-wrap { margin-top: 12px; }
 #search {
   width: 100%;
