@@ -72,7 +72,7 @@
           title productType description
           images(first: 4) { edges { node { url } } }
           variants(first: 25) { edges { node {
-            id title sku availableForSale
+            id title sku availableForSale quantityAvailable
             price { amount currencyCode }
           } } }
         } }
@@ -102,10 +102,11 @@
             title: v.title === "Default Title" ? "Default" : v.title,
             price: parseFloat(v.price ? v.price.amount : 0),
             available: v.availableForSale,
+            qty: v.quantityAvailable, // null si no se rastrea inventario
             sku: v.sku || "",
           };
-        }).filter((v) => v.available && v.price > 0);
-        if (!variants.length) continue; // sin precio/stock válido → no se muestra
+        }).filter((v) => v.available && v.price > 0 && (v.qty == null || v.qty > 0)); // solo inventario positivo (o no rastreado)
+        if (!variants.length) continue; // sin stock positivo → no se muestra
         out.push({
           id: node.title,
           title: node.title,
