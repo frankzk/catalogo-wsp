@@ -22,9 +22,8 @@ window.CATALOG_CONFIG = {
   // ⚠️ REEMPLAZA este valor por tu número real.
   whatsappNumber: "51918100477",
 
-  // Descuento global aplicado a los precios (en %). 0 = sin descuento global.
-  // Los packs con oferta propia usan "noDiscount": true en data/products.json.
-  discountPercent: 0,
+  // Descuento global aplicado a los precios (en %). Se muestra precio original tachado + rebajado.
+  discountPercent: 25,
 
   // Nota de envío que se incluye en el pedido de WhatsApp.
   shippingNote: "Envío gratis a todo Costa Rica 🎉",
