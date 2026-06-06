@@ -16,7 +16,7 @@ window.CATALOG_CONFIG = {
     { icon: "↩️", title: "Devolución fácil", sub: "Compra sin riesgo" },
   ],
 
-  metricsUrl: "",                // (opcional) URL del Apps Script para métricas
+  metricsUrl: "https://script.google.com/macros/s/AKfycbyhRH_3rhNDuekJkBVsoQkwSfZTMIgr_JPt28dUpUrqFy5JHrO9sa2rV28NK_936eY79g/exec",                // (opcional) URL del Apps Script para métricas
 
   shopifyDomain: "rayytn-ia.myshopify.com",             // ⚠️ COMPLETAR: algo.myshopify.com
   storefrontToken: "bfe7e84ed48541ac7ba9c2d0f63136cb",           // ⚠️ COMPLETAR: token público de Storefront

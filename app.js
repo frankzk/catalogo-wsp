@@ -511,7 +511,7 @@
     if (cart.size === 0) return;
     const items = [];
     cart.forEach((e) => items.push({ qty: e.qty, title: e.product.title, option: e.variant.title, sku: e.variant.sku || "", price: priced(e.product, e.variant).pay }));
-    track("order", { items, total: cartTotals().total });
+    track("order", { items, total: cartTotals().total, totalText: money(cartTotals().total) });
     const number = String(CFG.whatsappNumber || "").replace(/\D/g, "");
     const text = encodeURIComponent(buildOrderMessage());
     const url = number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;
@@ -528,7 +528,7 @@
         mode: "no-cors",
         keepalive: true,
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ event, store: CFG.storeName || "", ts: new Date().toISOString(), data: data || {} }),
+        body: JSON.stringify({ event, store: CFG.storeName || "", country: CFG.country || "", ts: new Date().toISOString(), data: data || {} }),
       });
     } catch (e) { /* nunca rompe el catálogo */ }
   }
