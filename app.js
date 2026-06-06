@@ -19,7 +19,7 @@
 
   /* ---------- Utilidades ---------- */
   // Formato de Costa Rica, SIN decimales (enteros). Miles con punto. Ej: ₡16.425
-  const CURRENCY_SYMBOL = { CRC: "₡", PEN: "S/ ", USD: "$", MXN: "$", COP: "$", EUR: "€" };
+  const CURRENCY_SYMBOL = { CRC: "₡", PEN: "S/ ", USD: "$", MXN: "$", COP: "$", EUR: "€", HNL: "L ", ARS: "$", PAB: "B/. ", GTQ: "Q ", CLP: "$", UYU: "$U ", BOB: "Bs ", DOP: "RD$ ", PYG: "₲ " };
   const money = (n) => {
     const v = Math.round(Number(n) || 0);
     const grouped = String(Math.abs(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -501,7 +501,8 @@
     lines.push(`*Total: ${money(cartTotals().total)}*`);
     lines.push("");
     if (DISCOUNT > 0) lines.push(`✅ *${DISCOUNT}% de dscto en TODO EL CATÁLOGO* sin restricciones.`);
-    lines.push(`✅ *Envío gratis* a todo *Costa Rica* 🎉`);
+    const pais = CFG.country ? ` a todo *${CFG.country}*` : "";
+    lines.push(`✅ *Envío gratis*${pais} 🎉`);
     lines.push(`✅ *Pago contra entrega:* Pagas al recibir 📦`);
     return lines.join("\n");
   }

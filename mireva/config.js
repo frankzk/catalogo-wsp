@@ -13,6 +13,9 @@ window.CATALOG_CONFIG = {
   headline: "Mireva Costa Rica",
   subtitle: "Envío gratis a todo Costa Rica 🚚",
 
+  // País (se usa en el mensaje: "Envío gratis a todo <país>").
+  country: "Costa Rica",
+
   // Idioma/formato de números (es-CR = colones tipo ₡19.900,00).
   locale: "es-CR",
 

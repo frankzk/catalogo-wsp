@@ -10,6 +10,9 @@ window.CATALOG_CONFIG = {
   headline: "Mi Tienda",
   subtitle: "Envío gratis 🚚",
 
+  // País (se usa en el mensaje: "Envío gratis a todo <país>").
+  country: "Mi País",
+
   // Idioma/formato (es-CR = colones ₡; es-PE = soles, etc.)
   locale: "es-CR",
 
