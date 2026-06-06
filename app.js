@@ -527,7 +527,7 @@
         mode: "no-cors",
         keepalive: true,
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ event, ts: new Date().toISOString(), data: data || {} }),
+        body: JSON.stringify({ event, store: CFG.storeName || "", ts: new Date().toISOString(), data: data || {} }),
       });
     } catch (e) { /* nunca rompe el catálogo */ }
   }

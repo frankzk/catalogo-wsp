@@ -104,3 +104,29 @@ config.js           # ⬅️ configuración editable (número, tienda, Shopify)
 data/products.json  # catálogo de muestra / respaldo
 scripts/sync-products.mjs  # (opcional) regenera products.json desde Shopify Admin
 ```
+
+---
+
+## 🏬 Multi-tienda (varias tiendas en un mismo repo)
+
+El código (`app.js`, `styles.css`) es **compartido**. Cada tienda vive en su **carpeta** con su propio `config.js`.
+
+```
+/app.js  /styles.css        ← motor compartido (se actualiza 1 vez para todas)
+/config.js                  ← PLANTILLA para nuevas tiendas
+/index.html                 ← redirige a la tienda principal
+/mireva/index.html  /mireva/config.js     → https://<usuario>.github.io/catalogo-wsp/mireva/
+/<tienda2>/index.html  /<tienda2>/config.js → .../catalogo-wsp/tienda2/
+...
+```
+
+### Agregar una tienda nueva
+1. Crea la carpeta `/<tienda>/`.
+2. Copia `index.html` de otra tienda (usa rutas `../styles.css` y `../app.js`) y la **plantilla** `config.js` de la raíz.
+3. Completa en `config.js`: `storeName`, `whatsappNumber`, `shopifyDomain`, `storefrontToken`, `discountPercent`, etc.
+4. Publica. El link de esa tienda es `.../catalogo-wsp/<tienda>/`.
+
+Cada tienda necesita su **propio token público de Storefront** (app Headless o app personalizado en su Shopify) y su **número de WhatsApp**.
+
+### Métricas multi-tienda
+Cada evento ahora incluye el nombre de la tienda (`store`). Puedes usar **una sola Hoja** para todas (agrega una columna `Tienda` en el Apps Script) o una hoja por tienda (cada `metricsUrl` distinto).
