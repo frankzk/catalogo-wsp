@@ -6,7 +6,7 @@ window.CATALOG_CONFIG = {
   country: "Honduras",
   locale: "es-HN",
 
-  whatsappNumber: "",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
+  whatsappNumber: "51918100477",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
   discountPercent: 30,
 
   trustBadges: [
@@ -18,8 +18,8 @@ window.CATALOG_CONFIG = {
 
   metricsUrl: "",                // (opcional) URL del Apps Script para métricas
 
-  shopifyDomain: "",             // ⚠️ COMPLETAR: algo.myshopify.com
-  storefrontToken: "",           // ⚠️ COMPLETAR: token público de Storefront
+  shopifyDomain: "w0qckv-cz.myshopify.com",             // ⚠️ COMPLETAR: algo.myshopify.com
+  storefrontToken: "661901b0402c785c5dbc44e7481d354a",           // ⚠️ COMPLETAR: token público de Storefront
   shopifyApiVersion: "2025-10",
 
   orderGreeting: "¡Hola! 👋 Quiero agregar estos productos a mi pedido:",
