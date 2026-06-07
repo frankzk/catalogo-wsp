@@ -10,6 +10,15 @@
   const $ = (sel, root) => (root || document).querySelector(sel);
   const DISCOUNT = Math.max(0, Math.min(100, Number(CFG.discountPercent) || 0));
 
+  // Teléfono del cliente recibido por el link (?tel= / ?wa= / ?phone=), solo dígitos.
+  // Permite que la asesora envíe el catálogo ya personalizado, sin que el cliente escriba.
+  const CUSTOMER_PHONE = (() => {
+    try {
+      const p = new URLSearchParams(location.search);
+      return (p.get("tel") || p.get("wa") || p.get("phone") || "").replace(/\D/g, "");
+    } catch (e) { return ""; }
+  })();
+
   // Estado en memoria.
   let PRODUCTS = []; // [{id,title,type,desc,images:[],variants:[{id,title,price,available,sku}]}]
   let CURRENCY = CFG.currency || "PEN";
@@ -499,6 +508,7 @@
     });
     lines.push("");
     lines.push(`*Total: ${money(cartTotals().total)}*`);
+    if (CUSTOMER_PHONE) lines.push(`📱 Mi WhatsApp: ${CUSTOMER_PHONE}`);
     lines.push("");
     if (DISCOUNT > 0) lines.push(`✅ *${DISCOUNT}% de dscto en TODO EL CATÁLOGO* sin restricciones.`);
     const pais = CFG.country ? ` a todo *${CFG.country}*` : "";
@@ -511,7 +521,7 @@
     if (cart.size === 0) return;
     const items = [];
     cart.forEach((e) => items.push({ qty: e.qty, title: e.product.title, option: e.variant.title, sku: e.variant.sku || "", price: priced(e.product, e.variant).pay }));
-    track("order", { items, total: cartTotals().total, totalText: money(cartTotals().total) });
+    track("order", { items, total: cartTotals().total, totalText: money(cartTotals().total), phone: CUSTOMER_PHONE });
     const number = String(CFG.whatsappNumber || "").replace(/\D/g, "");
     const text = encodeURIComponent(buildOrderMessage());
     const url = number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;
