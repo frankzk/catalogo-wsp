@@ -23,7 +23,7 @@ window.CATALOG_CONFIG = {
   // Formato internacional, solo dígitos (sin +, espacios ni guiones).
   // Costa Rica = 506 + número. Ejemplo: 50688889999
   // ⚠️ REEMPLAZA este valor por tu número real.
-  whatsappNumber: "51918100477",
+  whatsappNumber: "50686958940",
 
   // Descuento global aplicado a los precios (en %). Se muestra precio original tachado + rebajado.
   discountPercent: 30,
