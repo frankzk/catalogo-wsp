@@ -520,8 +520,8 @@
   function sendOrder() {
     if (cart.size === 0) return;
     const items = [];
-    cart.forEach((e) => items.push({ qty: e.qty, title: e.product.title, option: e.variant.title, sku: e.variant.sku || "", price: priced(e.product, e.variant).pay }));
-    track("order", { items, total: cartTotals().total, totalText: money(cartTotals().total), phone: CUSTOMER_PHONE });
+    cart.forEach((e) => items.push({ qty: e.qty, title: e.product.title, option: e.variant.title, sku: e.variant.sku || "", price: priced(e.product, e.variant).pay, variantId: e.variant.id }));
+    track("order", { items, total: cartTotals().total, totalText: money(cartTotals().total), phone: CUSTOMER_PHONE, shopDomain: CFG.shopifyDomain || "" });
     const number = String(CFG.whatsappNumber || "").replace(/\D/g, "");
     const text = encodeURIComponent(buildOrderMessage());
     const url = number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;
