@@ -25,6 +25,17 @@
     } catch (e) { return ""; }
   })();
 
+  // Nombre del cliente (del link ?name=, de la sesión guardada, o de la pantalla de acceso).
+  const NAME_KEY = "name:" + (CFG.shopifyDomain || CFG.storeName || "catalogo");
+  let customerName = (() => {
+    try {
+      const fromUrl = (new URLSearchParams(location.search).get("name") || "").trim();
+      if (fromUrl) { localStorage.setItem(NAME_KEY, fromUrl); return fromUrl; }
+      return (localStorage.getItem(NAME_KEY) || "").trim();
+    } catch (e) { return ""; }
+  })();
+  const firstName = (n) => { const w = (n || "").trim().split(/\s+/)[0]; return w ? w.charAt(0).toUpperCase() + w.slice(1) : ""; };
+
   // Estado en memoria.
   let PRODUCTS = []; // [{id,title,type,desc,images:[],variants:[{id,title,price,available,sku}]}]
   let CURRENCY = CFG.currency || "PEN";
@@ -571,7 +582,7 @@
       store: CFG.storeName || "",
       country: CFG.country || "",
       ts: new Date().toISOString(),
-      data: { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone, shopDomain: CFG.shopifyDomain || "", createOrder: true },
+      data: { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone, name: customerName, shopDomain: CFG.shopifyDomain || "", createOrder: true },
     };
     setSending(true);
     let ok = true, orderName = "";
@@ -755,7 +766,8 @@
       <div class="gate-card">
         <div class="store-avatar gate-avatar">${escapeHtml((CFG.storeName || "C").trim().charAt(0).toUpperCase())}</div>
         <h2>${escapeHtml(CFG.storeName || "Catálogo")}</h2>
-        <p>Ingresa tu número de WhatsApp para ver el catálogo y comprar con <b>pago contra entrega</b>.</p>
+        <p>Ingresa tus datos para ver el catálogo y comprar con <b>pago contra entrega</b>.</p>
+        <input id="gateName" class="gate-input" type="text" placeholder="Tu nombre" autocomplete="given-name" />
         <div class="gate-row">
           <select id="gateCode" aria-label="País">
             ${DIAL_CODES.map((x) => `<option value="${x.code}" ${x.code === def && x.c === (CFG.country || "Costa Rica") ? "selected" : ""}>${x.flag} +${x.code}</option>`).join("")}
@@ -767,20 +779,30 @@
       </div>`;
     document.body.appendChild(el);
     const num = el.querySelector("#gateNum");
-    setTimeout(() => num.focus(), 100);
+    const nm = el.querySelector("#gateName");
+    setTimeout(() => nm.focus(), 100);
     const submit = () => {
+      const name = nm.value.trim();
       const digits = num.value.replace(/\D/g, "");
+      if (name.length < 2) { nm.style.borderColor = "#e53935"; nm.focus(); return; }
       if (digits.length < 6) { num.style.borderColor = "#e53935"; num.focus(); return; }
+      customerName = name;
       customerPhone = el.querySelector("#gateCode").value + digits;
-      try { localStorage.setItem(PHONE_KEY, customerPhone); } catch (e) {}
+      try { localStorage.setItem(PHONE_KEY, customerPhone); localStorage.setItem(NAME_KEY, customerName); } catch (e) {}
+      applyWelcome();
       el.remove();
     };
     el.querySelector("#gateBtn").onclick = submit;
     num.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
   }
 
+  function applyWelcome() {
+    if (customerName && $("#storeSub")) $("#storeSub").textContent = `👋 ¡Bienvenido(a), ${firstName(customerName)}!`;
+  }
+
   async function init() {
     wireUI();
+    applyWelcome();
     if (!customerPhone) showGate();
     try {
       PRODUCTS = visibleProducts(await loadProducts());

@@ -404,6 +404,16 @@ body { padding-bottom: 90px; }
 .gate-avatar { width: 56px; height: 56px; font-size: 26px; margin: 0 auto 12px; }
 .gate-card h2 { margin: 0 0 6px; font-size: 20px; color: var(--wa-green); }
 .gate-card p { margin: 0 0 16px; color: #3b4a54; font-size: 14px; line-height: 1.4; }
+.gate-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 10px;
+}
+.gate-input:focus { border-color: var(--wa-teal); }
 .gate-row { display: flex; gap: 8px; margin-bottom: 14px; }
 .gate-row select {
   flex: 0 0 auto;
