@@ -14,12 +14,14 @@
   // (sube el pedido a Shopify como contra entrega vía el Apps Script).
   const CHECKOUT = (CFG.checkoutMode || "whatsapp").toLowerCase();
 
-  // Teléfono del cliente recibido por el link (?tel= / ?wa= / ?phone=), solo dígitos.
-  // Permite que la asesora envíe el catálogo ya personalizado, sin que el cliente escriba.
-  const CUSTOMER_PHONE = (() => {
+  // Teléfono del cliente: del link (?tel=), de la sesión guardada, o de la pantalla de acceso.
+  const PHONE_KEY = "phone:" + (CFG.shopifyDomain || CFG.storeName || "catalogo");
+  let customerPhone = (() => {
     try {
       const p = new URLSearchParams(location.search);
-      return (p.get("tel") || p.get("wa") || p.get("phone") || "").replace(/\D/g, "");
+      const fromUrl = (p.get("tel") || p.get("wa") || p.get("phone") || "").replace(/\D/g, "");
+      if (fromUrl) { localStorage.setItem(PHONE_KEY, fromUrl); return fromUrl; }
+      return (localStorage.getItem(PHONE_KEY) || "").replace(/\D/g, "");
     } catch (e) { return ""; }
   })();
 
@@ -512,7 +514,7 @@
     });
     lines.push("");
     lines.push(`*Total: ${money(cartTotals().total)}*`);
-    if (CUSTOMER_PHONE) lines.push(`📱 Mi WhatsApp: ${CUSTOMER_PHONE}`);
+    if (customerPhone) lines.push(`📱 Mi WhatsApp: ${customerPhone}`);
     lines.push("");
     if (DISCOUNT > 0) lines.push(`✅ *${DISCOUNT}% de dscto en TODO EL CATÁLOGO* sin restricciones.`);
     const pais = CFG.country ? ` a todo *${CFG.country}*` : "";
@@ -532,7 +534,7 @@
     if (cart.size === 0) return;
     if (CHECKOUT === "cod") return submitCod();
     // --- Modo WhatsApp ---
-    track("order", { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone: CUSTOMER_PHONE, shopDomain: CFG.shopifyDomain || "" });
+    track("order", { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone: customerPhone, shopDomain: CFG.shopifyDomain || "" });
     const number = String(CFG.whatsappNumber || "").replace(/\D/g, "");
     const text = encodeURIComponent(buildOrderMessage());
     const url = number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;
@@ -541,7 +543,7 @@
 
   /* ---------- Modo COD: subir pedido a Shopify (vía Apps Script) ---------- */
   function currentPhone() {
-    if (CUSTOMER_PHONE) return CUSTOMER_PHONE;
+    if (customerPhone) return customerPhone;
     const el = $("#phoneInput");
     return el ? el.value.replace(/\D/g, "") : "";
   }
@@ -720,8 +722,62 @@
     enableSwipeToClose($("#sheet .sheet-panel"), ".cart-items", closeSheet);
   }
 
+  /* ---------- Pantalla de acceso: pedir celular para entrar ---------- */
+  const DIAL_CODES = [
+    { c: "Costa Rica", code: "506", flag: "🇨🇷" },
+    { c: "Perú", code: "51", flag: "🇵🇪" },
+    { c: "Honduras", code: "504", flag: "🇭🇳" },
+    { c: "Panamá", code: "507", flag: "🇵🇦" },
+    { c: "México", code: "52", flag: "🇲🇽" },
+    { c: "Argentina", code: "54", flag: "🇦🇷" },
+    { c: "Colombia", code: "57", flag: "🇨🇴" },
+    { c: "Chile", code: "56", flag: "🇨🇱" },
+    { c: "Ecuador", code: "593", flag: "🇪🇨" },
+    { c: "Guatemala", code: "502", flag: "🇬🇹" },
+    { c: "El Salvador", code: "503", flag: "🇸🇻" },
+    { c: "Nicaragua", code: "505", flag: "🇳🇮" },
+    { c: "República Dominicana", code: "1", flag: "🇩🇴" },
+    { c: "España", code: "34", flag: "🇪🇸" },
+    { c: "Italia", code: "39", flag: "🇮🇹" },
+    { c: "Estados Unidos", code: "1", flag: "🇺🇸" },
+  ];
+
+  function showGate() {
+    const def = (DIAL_CODES.find((x) => x.c === CFG.country) || { code: "506" }).code;
+    const el = document.createElement("div");
+    el.className = "gate-overlay";
+    el.id = "gate";
+    el.innerHTML = `
+      <div class="gate-card">
+        <div class="store-avatar gate-avatar">${escapeHtml((CFG.storeName || "C").trim().charAt(0).toUpperCase())}</div>
+        <h2>${escapeHtml(CFG.storeName || "Catálogo")}</h2>
+        <p>Ingresa tu número de WhatsApp para ver el catálogo y comprar con <b>pago contra entrega</b>.</p>
+        <div class="gate-row">
+          <select id="gateCode" aria-label="País">
+            ${DIAL_CODES.map((x) => `<option value="${x.code}" ${x.code === def && x.c === (CFG.country || "Costa Rica") ? "selected" : ""}>${x.flag} +${x.code}</option>`).join("")}
+          </select>
+          <input id="gateNum" type="tel" inputmode="numeric" placeholder="Tu número" autocomplete="tel-national" />
+        </div>
+        <button class="send-btn" id="gateBtn">Ver catálogo</button>
+        <p class="gate-mini">🚚 Envío gratis · 📦 Pago contra entrega</p>
+      </div>`;
+    document.body.appendChild(el);
+    const num = el.querySelector("#gateNum");
+    setTimeout(() => num.focus(), 100);
+    const submit = () => {
+      const digits = num.value.replace(/\D/g, "");
+      if (digits.length < 6) { num.style.borderColor = "#e53935"; num.focus(); return; }
+      customerPhone = el.querySelector("#gateCode").value + digits;
+      try { localStorage.setItem(PHONE_KEY, customerPhone); } catch (e) {}
+      el.remove();
+    };
+    el.querySelector("#gateBtn").onclick = submit;
+    num.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
+  }
+
   async function init() {
     wireUI();
+    if (!customerPhone) showGate();
     try {
       PRODUCTS = visibleProducts(await loadProducts());
       if (!PRODUCTS.length) { setStatus("El catálogo está vacío por ahora."); return; }
