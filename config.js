@@ -22,6 +22,11 @@ window.CATALOG_CONFIG = {
   // Descuento global (%). Se muestra precio original tachado + rebajado, redondeado a entero.
   discountPercent: 30,
 
+  // Checkout: "whatsapp" (envía pedido por WhatsApp) o "cod" (sube el pedido a Shopify
+  // como contra entrega vía el Apps Script). Usa "cod" SOLO cuando el token de Admin
+  // de esa tienda ya esté puesto en el Apps Script.
+  checkoutMode: "whatsapp",
+
   // Sellos de confianza (se muestran en el detalle y en una tira).
   trustBadges: [
     { icon: "💵", title: "Pago contra entrega", sub: "Pagas al recibir" },

@@ -381,6 +381,32 @@ body { padding-bottom: 90px; }
 }
 .phone-input:focus { border-color: var(--wa-teal); }
 
+/* Pantalla de confirmación (modo COD) */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(11, 20, 26, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.confirm-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px 22px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+.confirm-emoji { font-size: 52px; line-height: 1; }
+.confirm-card h2 { margin: 12px 0 6px; font-size: 22px; color: var(--wa-green); }
+.confirm-card p { margin: 6px 0; color: #3b4a54; font-size: 15px; }
+.confirm-order { font-weight: 700; color: var(--wa-teal) !important; }
+.confirm-card .send-btn { margin-top: 18px; }
+
 /* Enlace discreto para seguir comprando */
 .continue-link {
   display: block;

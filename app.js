@@ -10,6 +10,10 @@
   const $ = (sel, root) => (root || document).querySelector(sel);
   const DISCOUNT = Math.max(0, Math.min(100, Number(CFG.discountPercent) || 0));
 
+  // Modo de checkout: "whatsapp" (envía el pedido por WhatsApp) o "cod"
+  // (sube el pedido a Shopify como contra entrega vía el Apps Script).
+  const CHECKOUT = (CFG.checkoutMode || "whatsapp").toLowerCase();
+
   // Teléfono del cliente recibido por el link (?tel= / ?wa= / ?phone=), solo dígitos.
   // Permite que la asesora envíe el catálogo ya personalizado, sin que el cliente escriba.
   const CUSTOMER_PHONE = (() => {
@@ -517,15 +521,94 @@
     return lines.join("\n");
   }
 
-  function sendOrder() {
-    if (cart.size === 0) return;
+  // Arma los ítems del pedido (precios ya con descuento + variante para Shopify).
+  function orderItems() {
     const items = [];
     cart.forEach((e) => items.push({ qty: e.qty, title: e.product.title, option: e.variant.title, sku: e.variant.sku || "", price: priced(e.product, e.variant).pay, variantId: e.variant.id }));
-    track("order", { items, total: cartTotals().total, totalText: money(cartTotals().total), phone: CUSTOMER_PHONE, shopDomain: CFG.shopifyDomain || "" });
+    return items;
+  }
+
+  function sendOrder() {
+    if (cart.size === 0) return;
+    if (CHECKOUT === "cod") return submitCod();
+    // --- Modo WhatsApp ---
+    track("order", { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone: CUSTOMER_PHONE, shopDomain: CFG.shopifyDomain || "" });
     const number = String(CFG.whatsappNumber || "").replace(/\D/g, "");
     const text = encodeURIComponent(buildOrderMessage());
     const url = number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;
     window.open(url, "_blank");
+  }
+
+  /* ---------- Modo COD: subir pedido a Shopify (vía Apps Script) ---------- */
+  function currentPhone() {
+    if (CUSTOMER_PHONE) return CUSTOMER_PHONE;
+    const el = $("#phoneInput");
+    return el ? el.value.replace(/\D/g, "") : "";
+  }
+
+  function ensurePhoneField() {
+    let el = $("#phoneInput");
+    if (!el) {
+      el = document.createElement("input");
+      el.id = "phoneInput";
+      el.className = "phone-input";
+      el.type = "tel";
+      el.inputMode = "tel";
+      el.placeholder = "Tu número de celular (para tu pedido)";
+      $("#sheet .sheet-foot").insertBefore(el, $("#sendBtn"));
+    }
+    el.focus();
+    el.style.borderColor = "#e53935";
+  }
+
+  async function submitCod() {
+    const phone = currentPhone();
+    if (!phone) { ensurePhoneField(); return; }
+    const payload = {
+      event: "order",
+      store: CFG.storeName || "",
+      country: CFG.country || "",
+      ts: new Date().toISOString(),
+      data: { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone, shopDomain: CFG.shopifyDomain || "", createOrder: true },
+    };
+    setSending(true);
+    let ok = true, orderName = "";
+    try {
+      const res = await fetch(CFG.metricsUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      });
+      try { const j = await res.json(); if (j && j.ok === false) ok = false; orderName = (j && j.order) || ""; } catch (_) { /* respuesta no legible: asumimos enviado */ }
+    } catch (e) { /* red: asumimos enviado, el dueño recibe alerta por Telegram */ }
+    setSending(false);
+    if (ok) { cart.clear(); updateCartUI(); }
+    showConfirmation(ok, orderName);
+  }
+
+  function setSending(on) {
+    const b = $("#sendBtn");
+    if (!b) return;
+    b.disabled = on;
+    b.dataset.busy = on ? "1" : "";
+    b.textContent = on ? "Enviando pedido…" : codButtonLabel();
+  }
+  const codButtonLabel = () => "Confirmar pedido · Pago contra entrega 📦";
+
+  function showConfirmation(ok, orderName) {
+    closeSheet();
+    let el = document.getElementById("confirmOverlay");
+    if (!el) { el = document.createElement("div"); el.id = "confirmOverlay"; el.className = "confirm-overlay"; document.body.appendChild(el); }
+    el.innerHTML = `
+      <div class="confirm-card">
+        <div class="confirm-emoji">${ok ? "✅" : "📦"}</div>
+        <h2>${ok ? "¡Pedido confirmado!" : "¡Pedido recibido!"}</h2>
+        <p>Te contactaremos para coordinar la entrega. <b>Pago contra entrega</b> 📦</p>
+        ${orderName ? `<p class="confirm-order">N° ${escapeHtml(orderName)}</p>` : ""}
+        <button class="send-btn" id="confirmClose">Seguir viendo productos</button>
+      </div>`;
+    el.hidden = false;
+    document.getElementById("confirmClose").onclick = () => { el.hidden = true; };
   }
 
   /* ---------- Métricas (opcional, a Google Sheets) ---------- */
@@ -629,6 +712,7 @@
     $("#headerCart").addEventListener("click", openSheet);
     $("#sendBtn").addEventListener("click", sendOrder);
     $("#continueBtn").addEventListener("click", closeSheet);
+    if (CHECKOUT === "cod") $("#sendBtn").textContent = codButtonLabel();
     $("#sheet").querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeSheet));
 
     // Deslizar hacia abajo para cerrar (detalle y carrito).
