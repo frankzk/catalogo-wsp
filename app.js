@@ -601,13 +601,17 @@
     closeSheet();
     let el = document.getElementById("confirmOverlay");
     if (!el) { el = document.createElement("div"); el.id = "confirmOverlay"; el.className = "confirm-overlay"; document.body.appendChild(el); }
+    const waNum = String(CFG.whatsappNumber || "").replace(/\D/g, "");
+    const waMsg = encodeURIComponent(`¡Hola! 👋 Confirmo mi nuevo pedido${orderName ? " " + orderName : ""} 🛒. Quiero coordinar la entrega (pago contra entrega) 📦`);
+    const waLink = waNum ? `https://wa.me/${waNum}?text=${waMsg}` : "";
     el.innerHTML = `
       <div class="confirm-card">
         <div class="confirm-emoji">${ok ? "✅" : "📦"}</div>
         <h2>${ok ? "¡Pedido confirmado!" : "¡Pedido recibido!"}</h2>
         <p>Te contactaremos para coordinar la entrega. <b>Pago contra entrega</b> 📦</p>
         ${orderName ? `<p class="confirm-order">N° ${escapeHtml(orderName)}</p>` : ""}
-        <button class="send-btn" id="confirmClose">Seguir viendo productos</button>
+        ${waLink ? `<a class="send-btn wa-confirm" href="${waLink}" target="_blank" rel="noopener">Confirmar por WhatsApp 💬</a>` : ""}
+        <button class="continue-link" id="confirmClose">Seguir viendo productos</button>
       </div>`;
     el.hidden = false;
     document.getElementById("confirmClose").onclick = () => { el.hidden = true; };
