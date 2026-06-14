@@ -27,6 +27,7 @@ window.CATALOG_CONFIG = {
 
   // Descuento global aplicado a los precios (en %). Se muestra precio original tachado + rebajado.
   discountPercent: 30,
+  checkoutMode: "cod",
 
   // Nota de envío que se incluye en el pedido de WhatsApp.
   shippingNote: "Envío gratis a todo Costa Rica 🎉",
@@ -52,7 +53,7 @@ window.CATALOG_CONFIG = {
   //   "Desarrollar apps" → Crear una app → Configurar Storefront API →
   //   marcar "unauthenticated_read_product_listings" (y _read_product_inventory)
   //   → Instalar → copiar el "Storefront API access token".
-  shopifyDomain: "mireva-costa-rica.myshopify.com", // dominio .myshopify.com de la tienda
+  shopifyDomain: "bnegwe-m1.myshopify.com", // dominio .myshopify.com de la tienda
   storefrontToken: "40315a42f90090a40e3476d48864d777", // token PÚBLICO de Storefront API (solo lectura)
   shopifyApiVersion: "2025-10", // versión de la Storefront API
 
