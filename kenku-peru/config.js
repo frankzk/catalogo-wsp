@@ -6,7 +6,7 @@ window.CATALOG_CONFIG = {
   country: "Perú",
   locale: "es-PE",
 
-  whatsappNumber: "",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
+  whatsappNumber: "51900183696",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
   discountPercent: 30,
 
   trustBadges: [
