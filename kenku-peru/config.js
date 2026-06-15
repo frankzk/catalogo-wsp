@@ -20,7 +20,7 @@ window.CATALOG_CONFIG = {
   metricsUrl: "https://script.google.com/macros/s/AKfycbyhRH_3rhNDuekJkBVsoQkwSfZTMIgr_JPt28dUpUrqFy5JHrO9sa2rV28NK_936eY79g/exec",                // (opcional) URL del Apps Script para métricas
 
   shopifyDomain: "kenkuperu.myshopify.com",             // ⚠️ COMPLETAR: algo.myshopify.com
-  storefrontToken: "fef40460b2efb7d5e62d7f029fac1415",           // ⚠️ COMPLETAR: token público de Storefront
+  storefrontToken: "c6d0875b1ff522976785b2476e772477",           // ⚠️ COMPLETAR: token público de Storefront
   shopifyApiVersion: "2025-10",
 
   orderGreeting: "¡Hola! 👋 Quiero agregar estos productos a mi pedido:",
