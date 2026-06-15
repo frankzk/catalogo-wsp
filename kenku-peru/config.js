@@ -8,6 +8,7 @@ window.CATALOG_CONFIG = {
 
   whatsappNumber: "51900183696",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
   discountPercent: 30,
+  checkoutMode: "cod",
 
   trustBadges: [
     { icon: "💵", title: "Pago contra entrega", sub: "Pagas al recibir" },
