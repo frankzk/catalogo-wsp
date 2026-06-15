@@ -779,6 +779,11 @@
     document.body.appendChild(el);
     const num = el.querySelector("#gateNum");
     setTimeout(() => num.focus(), 100);
+    // Formato visual: guion cada 4 dígitos (ej. 6352-2024). Se guardan solo dígitos.
+    num.addEventListener("input", () => {
+      const dg = num.value.replace(/\D/g, "").slice(0, 12);
+      num.value = dg.replace(/(\d{4})(?=\d)/g, "$1-");
+    });
     const submit = () => {
       const digits = num.value.replace(/\D/g, "");
       if (digits.length < 6) { num.style.borderColor = "#e53935"; num.focus(); return; }
