@@ -766,8 +766,7 @@
       <div class="gate-card">
         <div class="store-avatar gate-avatar">${escapeHtml((CFG.storeName || "C").trim().charAt(0).toUpperCase())}</div>
         <h2>${escapeHtml(CFG.storeName || "Catálogo")}</h2>
-        <p>Ingresa tus datos para ver el catálogo y comprar con <b>pago contra entrega</b>.</p>
-        <input id="gateName" class="gate-input" type="text" placeholder="Tu nombre" autocomplete="given-name" />
+        <p>Ingresa tu número de WhatsApp para ver el catálogo y comprar con <b>pago contra entrega</b>.</p>
         <div class="gate-row">
           <select id="gateCode" aria-label="País">
             ${DIAL_CODES.map((x) => `<option value="${x.code}" ${x.code === def && x.c === (CFG.country || "Costa Rica") ? "selected" : ""}>${x.flag} +${x.code}</option>`).join("")}
@@ -779,18 +778,14 @@
       </div>`;
     document.body.appendChild(el);
     const num = el.querySelector("#gateNum");
-    const nm = el.querySelector("#gateName");
-    setTimeout(() => nm.focus(), 100);
+    setTimeout(() => num.focus(), 100);
     const submit = () => {
-      const name = nm.value.trim();
       const digits = num.value.replace(/\D/g, "");
-      if (name.length < 2) { nm.style.borderColor = "#e53935"; nm.focus(); return; }
       if (digits.length < 6) { num.style.borderColor = "#e53935"; num.focus(); return; }
-      customerName = name;
       customerPhone = el.querySelector("#gateCode").value + digits;
-      try { localStorage.setItem(PHONE_KEY, customerPhone); localStorage.setItem(NAME_KEY, customerName); } catch (e) {}
-      applyWelcome();
+      try { localStorage.setItem(PHONE_KEY, customerPhone); } catch (e) {}
       el.remove();
+      lookupName(); // jala el nombre desde Shopify por el teléfono
     };
     el.querySelector("#gateBtn").onclick = submit;
     num.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
@@ -800,10 +795,25 @@
     if (customerName && $("#storeSub")) $("#storeSub").textContent = `👋 ¡Bienvenido(a), ${firstName(customerName)}!`;
   }
 
+  // Pide al Apps Script el nombre del cliente según su teléfono (Shopify Admin).
+  async function lookupName() {
+    if (!CFG.metricsUrl || !customerPhone) return;
+    try {
+      const res = await fetch(CFG.metricsUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ event: "lookup", store: CFG.storeName || "", country: CFG.country || "", data: { phone: customerPhone, shopDomain: CFG.shopifyDomain || "" } }),
+      });
+      const j = await res.json();
+      if (j && j.name) { customerName = j.name; try { localStorage.setItem(NAME_KEY, customerName); } catch (e) {} applyWelcome(); }
+    } catch (e) { /* sin nombre: saludo genérico */ }
+  }
+
   async function init() {
     wireUI();
     applyWelcome();
     if (!customerPhone) showGate();
+    else if (!customerName) lookupName();
     try {
       PRODUCTS = visibleProducts(await loadProducts());
       if (!PRODUCTS.length) { setStatus("El catálogo está vacío por ahora."); return; }
