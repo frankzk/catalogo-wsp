@@ -6,7 +6,7 @@ window.CATALOG_CONFIG = {
   country: "Honduras",
   locale: "es-HN",
 
-  whatsappNumber: "51918100477",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
+  whatsappNumber: "50686381361",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
   discountPercent: 30,
   checkoutMode: "cod",
 
