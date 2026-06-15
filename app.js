@@ -757,6 +757,18 @@
     { c: "Estados Unidos", code: "1", flag: "🇺🇸" },
   ];
 
+  // Agrupación del número por código de país (solo visual).
+  const PHONE_GROUPS = { "506": [4, 4], "504": [4, 4], "507": [4, 4], "51": [3, 3, 3], "34": [3, 3, 3], "52": [2, 4, 4], "57": [3, 3, 4], "54": [2, 4, 4], "56": [1, 4, 4], "39": [3, 3, 4], "593": [2, 3, 4], "502": [4, 4], "503": [4, 4], "505": [4, 4], "1": [3, 3, 4] };
+  function formatPhone(digits, code) {
+    digits = String(digits).replace(/\D/g, "").slice(0, 13);
+    const groups = PHONE_GROUPS[code];
+    if (!groups) return digits.replace(/(\d{3})(?=\d)/g, "$1-");
+    const parts = []; let i = 0;
+    for (const g of groups) { if (i >= digits.length) break; parts.push(digits.slice(i, i + g)); i += g; }
+    if (i < digits.length) parts.push(digits.slice(i));
+    return parts.join("-");
+  }
+
   function showGate() {
     const def = (DIAL_CODES.find((x) => x.c === CFG.country) || { code: "506" }).code;
     const el = document.createElement("div");
@@ -778,12 +790,12 @@
       </div>`;
     document.body.appendChild(el);
     const num = el.querySelector("#gateNum");
+    const code = el.querySelector("#gateCode");
     setTimeout(() => num.focus(), 100);
-    // Formato visual: guion cada 4 dígitos (ej. 6352-2024). Se guardan solo dígitos.
-    num.addEventListener("input", () => {
-      const dg = num.value.replace(/\D/g, "").slice(0, 12);
-      num.value = dg.replace(/(\d{4})(?=\d)/g, "$1-");
-    });
+    // Formato visual por país (se guardan solo dígitos).
+    const reformat = () => { num.value = formatPhone(num.value, code.value); };
+    num.addEventListener("input", reformat);
+    code.addEventListener("change", reformat);
     const submit = () => {
       const digits = num.value.replace(/\D/g, "");
       if (digits.length < 6) { num.style.borderColor = "#e53935"; num.focus(); return; }
