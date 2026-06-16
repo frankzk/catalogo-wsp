@@ -586,18 +586,18 @@
       data: { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone, name: customerName, shopDomain: CFG.shopifyDomain || "", createOrder: true },
     };
     setSending(true);
-    let ok = true, orderName = "";
+    let ok = true, orderName = "", merged = false;
     try {
       const res = await fetch(CFG.metricsUrl, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload),
       });
-      try { const j = await res.json(); if (j && j.ok === false) ok = false; orderName = (j && j.order) || ""; } catch (_) { /* respuesta no legible: asumimos enviado */ }
+      try { const j = await res.json(); if (j && j.ok === false) ok = false; orderName = (j && j.order) || ""; merged = !!(j && j.merged); } catch (_) { /* respuesta no legible: asumimos enviado */ }
     } catch (e) { /* red: asumimos enviado, el dueño recibe alerta por Telegram */ }
     setSending(false);
     if (ok) { cart.clear(); updateCartUI(); }
-    showConfirmation(ok, orderName);
+    showConfirmation(ok, orderName, merged);
   }
 
   function setSending(on) {
@@ -609,7 +609,7 @@
   }
   const codButtonLabel = () => "Confirmar pedido · Pago contra entrega 📦";
 
-  function showConfirmation(ok, orderName) {
+  function showConfirmation(ok, orderName, merged) {
     closeSheet();
     let el = document.getElementById("confirmOverlay");
     if (!el) { el = document.createElement("div"); el.id = "confirmOverlay"; el.className = "confirm-overlay"; document.body.appendChild(el); }
@@ -622,6 +622,7 @@
         <h2>${ok ? "¡Pedido confirmado!" : "¡Pedido recibido!"}</h2>
         <p>Te contactaremos para coordinar la entrega. <b>Pago contra entrega</b> 📦</p>
         ${orderName ? `<p class="confirm-order">N° ${escapeHtml(orderName)}</p>` : ""}
+        ${merged ? `<p class="confirm-merged">Combinamos esto con tu pedido en curso 🧩</p>` : ""}
         ${waLink ? `<a class="send-btn wa-confirm" href="${waLink}" target="_blank" rel="noopener">Confirmar por WhatsApp 💬</a>` : ""}
         <button class="continue-link" id="confirmClose">Seguir viendo productos</button>
       </div>`;

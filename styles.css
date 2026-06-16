@@ -460,6 +460,7 @@ body { padding-bottom: 90px; }
 .confirm-card h2 { margin: 12px 0 6px; font-size: 22px; color: var(--wa-green); }
 .confirm-card p { margin: 6px 0; color: #3b4a54; font-size: 15px; }
 .confirm-order { font-weight: 700; color: var(--wa-teal) !important; }
+.confirm-merged { font-size: 13px !important; color: #667781 !important; }
 .confirm-card .send-btn { margin-top: 18px; }
 .confirm-card .wa-confirm { text-decoration: none; margin-top: 18px; }
 
