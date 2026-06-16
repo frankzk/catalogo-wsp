@@ -16,13 +16,14 @@
 
   // Teléfono del cliente: del link (?tel=), de la sesión guardada, o de la pantalla de acceso.
   const PHONE_KEY = "phone:" + (CFG.shopifyDomain || CFG.storeName || "catalogo");
-  let customerPhone = (() => {
+  let customerPhone = "";
+  (function () {
     try {
       const p = new URLSearchParams(location.search);
-      const fromUrl = (p.get("tel") || p.get("wa") || p.get("phone") || "").replace(/\D/g, "");
-      if (fromUrl) { localStorage.setItem(PHONE_KEY, fromUrl); return fromUrl; }
-      return (localStorage.getItem(PHONE_KEY) || "").replace(/\D/g, "");
-    } catch (e) { return ""; }
+      customerPhone = (p.get("tel") || p.get("wa") || p.get("phone") || "").replace(/\D/g, "");
+    } catch (e) {}
+    if (customerPhone) { try { localStorage.setItem(PHONE_KEY, customerPhone); } catch (e) {} }
+    else { try { customerPhone = (localStorage.getItem(PHONE_KEY) || "").replace(/\D/g, ""); } catch (e) {} }
   })();
 
   // Nombre del cliente (del link ?name=, de la sesión guardada, o de la pantalla de acceso).
