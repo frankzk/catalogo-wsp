@@ -129,4 +129,12 @@ El código (`app.js`, `styles.css`) es **compartido**. Cada tienda vive en su **
 Cada tienda necesita su **propio token público de Storefront** (app Headless o app personalizado en su Shopify) y su **número de WhatsApp**.
 
 ### Métricas multi-tienda
-Cada evento ahora incluye el nombre de la tienda (`store`). Puedes usar **una sola Hoja** para todas (agrega una columna `Tienda` en el Apps Script) o una hoja por tienda (cada `metricsUrl` distinto).
+Cada evento ahora incluye el nombre de la tienda (`store`) y el teléfono del cliente (`data.phone`). Puedes usar **una sola Hoja** para todas (agrega una columna `Tienda` en el Apps Script) o una hoja por tienda (cada `metricsUrl` distinto).
+
+### Dashboard · Revenue Lift del Catálogo
+Panel ejecutivo en `/dashboard/` (ej. `.../catalogo-wsp/dashboard/`) que responde **"¿cuánto dinero adicional genera el catálogo?"**: card principal de ingreso adicional (monto, % sobre facturación principal y promedio diario), KPIs (pedidos que recibieron catálogo, pedidos con upsell, tasa de upsell, venta adicional, ticket adicional promedio, incremento del AOV), embudo (Confirmados → Catálogo abierto → Agregó producto → Compró upsell), top productos del catálogo, rendimiento por producto principal y gráfica diaria. Filtros por rango de fecha, tienda y producto principal.
+
+- **Datos:** el panel consulta el mismo Apps Script (`metricsUrl`) con `?action=report`. El Apps Script mezcla la hoja `Eventos` (lado catálogo) + la hoja `Upsells` (atribución) + Shopify (facturación base/AOV/# confirmados).
+- **Acceso:** protegido con clave. Define en Apps Script → *Configuración del proyecto → Propiedades del script* la propiedad `DASHBOARD_KEY`. El panel la pide una vez y la guarda en `localStorage`.
+- **Moneda:** el selector de tienda es de una sola tienda; los montos van en la moneda de esa tienda (no se suman monedas distintas).
+- **Atribución** (tabla "producto principal"): se registra desde que el Apps Script con el logging de `Upsells` queda publicado, hacia adelante.

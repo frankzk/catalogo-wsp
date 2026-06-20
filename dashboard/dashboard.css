@@ -1,0 +1,126 @@
+/* ===== Dashboard ejecutivo · Revenue Lift del Catálogo ===== */
+.dash-body {
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dash-wrap { max-width: 1080px; margin: 0 auto; padding: 14px 14px 40px; }
+
+/* ----- Header ----- */
+.dash-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.dash-title h1 { font-size: 19px; margin: 0; font-weight: 700; }
+.dash-sub { font-size: 12.5px; color: var(--muted); }
+.dash-link { background: none; border: none; color: var(--muted); font-size: 12.5px; cursor: pointer; padding: 4px; }
+.dash-link:hover { color: var(--text); }
+
+/* ----- Filtros ----- */
+.dash-filters {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 10px;
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 10px 12px; box-shadow: var(--shadow); margin-bottom: 12px;
+}
+.dash-filters label { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--muted); font-weight: 600; }
+.dash-filters select, .dash-filters input {
+  border: 1px solid var(--border); border-radius: 9px; padding: 7px 8px; font-size: 13px;
+  background: #fff; color: var(--text); min-width: 120px;
+}
+.dash-filters input[type="date"] { min-width: 130px; }
+
+/* ----- Botones ----- */
+.dash-btn-primary {
+  background: var(--wa-teal); color: #fff; border: none; border-radius: 9px;
+  padding: 8px 16px; font-size: 13.5px; font-weight: 700; cursor: pointer;
+}
+.dash-btn-primary:active { transform: scale(0.98); }
+
+/* ----- Estados ----- */
+.dash-loading, .dash-error { padding: 18px; text-align: center; color: var(--muted); font-size: 14px; }
+.dash-error { color: #b42318; background: #fff4f3; border: 1px solid #ffd7d2; border-radius: var(--radius); }
+
+/* ----- Hero / card principal ----- */
+.dash-hero {
+  background: linear-gradient(135deg, var(--wa-green), var(--wa-teal));
+  color: #fff; border-radius: var(--radius); padding: 18px 20px; margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.dash-hero-label { font-size: 12.5px; opacity: .85; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+.dash-hero-amount { font-size: 40px; font-weight: 800; line-height: 1.05; margin: 4px 0 6px; }
+.dash-hero-meta { font-size: 13px; opacity: .92; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.dash-hero-meta strong { font-weight: 800; }
+.dash-dot { opacity: .6; }
+
+/* ----- KPIs ----- */
+.dash-kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 12px; }
+.dash-kpi {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 11px;
+  box-shadow: var(--shadow);
+}
+.dash-kpi .k-label { font-size: 10.5px; color: var(--muted); font-weight: 600; line-height: 1.25; }
+.dash-kpi .k-value { font-size: 19px; font-weight: 800; margin-top: 2px; }
+.dash-kpi .k-sub { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+
+/* ----- Cards genéricas ----- */
+.dash-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 12px 14px; box-shadow: var(--shadow); margin-bottom: 12px;
+}
+.dash-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.dash-card-head h2 { font-size: 14px; margin: 0; font-weight: 700; }
+.dash-hint { font-size: 11px; color: var(--muted); }
+
+/* ----- Embudo ----- */
+.dash-funnel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.dash-step { position: relative; background: #f3f7f6; border: 1px solid var(--border); border-radius: 10px; padding: 9px 10px; }
+.dash-step .s-name { font-size: 11px; color: var(--muted); font-weight: 600; }
+.dash-step .s-count { font-size: 20px; font-weight: 800; }
+.dash-step .s-conv { font-size: 11px; color: var(--wa-teal); font-weight: 700; margin-top: 1px; }
+.dash-step .s-bar { height: 4px; border-radius: 3px; background: var(--wa-light); margin-top: 6px; }
+
+/* ----- Tabs ----- */
+.dash-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+.dash-tab {
+  background: none; border: none; border-bottom: 2px solid transparent; padding: 6px 8px;
+  font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer;
+}
+.dash-tab.is-active { color: var(--text); border-bottom-color: var(--wa-teal); }
+
+/* ----- Tablas ----- */
+.dash-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.dash-table th, .dash-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.dash-table th { font-size: 10.5px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+.dash-table td.num, .dash-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.dash-table tbody tr:last-child td { border-bottom: none; }
+.dash-bar-cell { position: relative; }
+.dash-share { display: inline-block; min-width: 38px; text-align: right; }
+.dash-empty { text-align: center; color: var(--muted); padding: 16px; font-size: 13px; }
+
+/* ----- Gráfica ----- */
+.dash-chart { width: 100%; overflow-x: auto; }
+.dash-chart svg { display: block; }
+.dash-chart .bar { fill: var(--wa-teal); }
+.dash-chart .axis { stroke: var(--border); }
+.dash-chart .lbl { fill: var(--muted); font-size: 9px; }
+
+/* ----- Gate ----- */
+.dash-gate { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); padding: 20px; }
+.dash-gate-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 26px 24px; width: 100%; max-width: 340px; text-align: center;
+}
+.dash-gate-emoji { font-size: 34px; }
+.dash-gate-card h1 { font-size: 18px; margin: 8px 0 2px; }
+.dash-gate-card p { font-size: 13px; color: var(--muted); margin: 0 0 14px; }
+.dash-gate-card input { width: 100%; border: 1px solid var(--border); border-radius: 9px; padding: 10px; font-size: 14px; margin-bottom: 10px; }
+.dash-gate-card input:focus { outline: none; border-color: var(--wa-teal); }
+.dash-gate-card button { width: 100%; }
+.dash-gate-error { color: #b42318 !important; margin-top: 10px !important; }
+
+/* ----- Responsive ----- */
+@media (max-width: 760px) {
+  .dash-kpis { grid-template-columns: repeat(2, 1fr); }
+  .dash-funnel { grid-template-columns: repeat(2, 1fr); }
+  .dash-hero-amount { font-size: 32px; }
+}

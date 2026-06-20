@@ -634,13 +634,15 @@
   function track(event, data) {
     const url = CFG.metricsUrl || "";
     if (!url) return;
+    // Adjuntamos el teléfono a cada evento para poder armar el embudo por cliente en el dashboard.
+    const payload = Object.assign({ phone: customerPhone || "" }, data || {});
     try {
       fetch(url, {
         method: "POST",
         mode: "no-cors",
         keepalive: true,
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ event, store: CFG.storeName || "", country: CFG.country || "", ts: new Date().toISOString(), data: data || {} }),
+        body: JSON.stringify({ event, store: CFG.storeName || "", country: CFG.country || "", ts: new Date().toISOString(), data: payload }),
       });
     } catch (e) { /* nunca rompe el catálogo */ }
   }
