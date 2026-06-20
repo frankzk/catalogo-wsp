@@ -1,4 +1,4 @@
-/* Configuración de Aurela Perú. Completa los 3 campos marcados ⚠️ COMPLETAR. */
+/* Configuración de Aurela Perú. */
 window.CATALOG_CONFIG = {
   storeName: "Aurela Perú",
   headline: "Aurela Perú",
@@ -20,7 +20,7 @@ window.CATALOG_CONFIG = {
   metricsUrl: "https://script.google.com/macros/s/AKfycbyhRH_3rhNDuekJkBVsoQkwSfZTMIgr_JPt28dUpUrqFy5JHrO9sa2rV28NK_936eY79g/exec",                // (opcional) URL del Apps Script para métricas
 
   shopifyDomain: "aurela-peru.myshopify.com",             // dominio Shopify (algo.myshopify.com)
-  storefrontToken: "",           // ⚠️ COMPLETAR: token público de Storefront
+  storefrontToken: "f58a1a9472822b698f08866fb68907c5", // token público de Storefront
   shopifyApiVersion: "2025-10",
 
   orderGreeting: "¡Hola! 👋 Quiero agregar estos productos a mi pedido:",
