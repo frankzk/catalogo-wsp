@@ -6,7 +6,7 @@ window.CATALOG_CONFIG = {
   country: "Perú",
   locale: "es-PE",
 
-  whatsappNumber: "",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
+  whatsappNumber: "51900183696",            // número con código de país (solo dígitos)
   discountPercent: 30,
   checkoutMode: "cod",           // contra entrega: sube el pedido a Shopify vía el Apps Script
 
@@ -19,7 +19,7 @@ window.CATALOG_CONFIG = {
 
   metricsUrl: "https://script.google.com/macros/s/AKfycbyhRH_3rhNDuekJkBVsoQkwSfZTMIgr_JPt28dUpUrqFy5JHrO9sa2rV28NK_936eY79g/exec",                // (opcional) URL del Apps Script para métricas
 
-  shopifyDomain: "",             // ⚠️ COMPLETAR: algo.myshopify.com
+  shopifyDomain: "aurela-peru.myshopify.com",             // dominio Shopify (algo.myshopify.com)
   storefrontToken: "",           // ⚠️ COMPLETAR: token público de Storefront
   shopifyApiVersion: "2025-10",
 
