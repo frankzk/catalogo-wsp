@@ -8,7 +8,7 @@ window.CATALOG_CONFIG = {
 
   whatsappNumber: "",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
   discountPercent: 30,
-  checkoutMode: "whatsapp",      // "whatsapp" (pedido por WhatsApp) o "cod" (contra entrega vía Apps Script)
+  checkoutMode: "cod",           // contra entrega: sube el pedido a Shopify vía el Apps Script
 
   trustBadges: [
     { icon: "💵", title: "Pago contra entrega", sub: "Pagas al recibir" },
