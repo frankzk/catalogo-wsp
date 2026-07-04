@@ -131,6 +131,9 @@ Cada tienda necesita su **propio token público de Storefront** (app Headless o 
 ### Métricas multi-tienda
 Cada evento ahora incluye el nombre de la tienda (`store`) y el teléfono del cliente (`data.phone`). Puedes usar **una sola Hoja** para todas (agrega una columna `Tienda` en el Apps Script) o una hoja por tienda (cada `metricsUrl` distinto).
 
+### Notificaciones de Telegram (varios destinatarios)
+Los avisos de pedido ("NUEVO PEDIDO" y "Shopify: pedido … Combinó y canceló") los envía el **Apps Script** (no este repo). Para que un mismo aviso llegue a **varios chats**, define en Apps Script → *Configuración del proyecto → Propiedades del script* la propiedad `TELEGRAM_CHAT_IDS` con los IDs separados por coma (ej. `<ID_1>,8617454131`) y usa un helper `enviarTelegram(texto)` que itere sobre esa lista (`muteHttpExceptions: true` para que un `403` de un ID no corte el envío al resto). Cada destinatario debe haber iniciado el chat con el bot (`/start`); si no, Telegram responde `403` y no le llega.
+
 ### Dashboard · Revenue Lift del Catálogo
 Panel ejecutivo en `/dashboard/` (ej. `.../catalogo-wsp/dashboard/`) que responde **"¿cuánto dinero adicional genera el catálogo?"**: card principal de ingreso adicional (monto, % sobre facturación principal y promedio diario), KPIs (pedidos que recibieron catálogo, pedidos con upsell, tasa de upsell, venta adicional, ticket adicional promedio, incremento del AOV), embudo (Confirmados → Catálogo abierto → Agregó producto → Compró upsell), top productos del catálogo, rendimiento por producto principal y gráfica diaria. Filtros por rango de fecha, tienda y producto principal.
 
