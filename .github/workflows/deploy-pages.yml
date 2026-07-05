@@ -1,10 +1,13 @@
 name: Deploy catálogo a GitHub Pages
 
+# Solo 'main' publica el sitio. Las ramas de trabajo NO deben desplegar:
+# GitHub Pages hospeda un único despliegue, así que un deploy desde una rama
+# que va detrás de main sobrescribe (pisa) el sitio bueno y tumba secciones
+# que aún no existen en esa rama (esto causó la caída de aurela-peru).
 on:
   push:
     branches:
       - main
-      - claude/relaxed-johnson-8GfE8
   workflow_dispatch:
 
 permissions:
