@@ -15,6 +15,7 @@
     { name: "Kenku México", locale: "es-MX" },
     { name: "Kenku Panamá", locale: "es-PA" },
     { name: "Kenku Perú", locale: "es-PE" },
+    { name: "Aurela Perú", locale: "es-PE" },
   ];
 
   const KEY_LS = "dash:key";

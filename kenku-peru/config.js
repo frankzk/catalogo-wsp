@@ -1,4 +1,4 @@
-/* Configuración de Kenku Perú. Completa los 3 campos marcados ⚠️ COMPLETAR. */
+/* Configuración de Kenku Perú (WooCommerce). Completa wooUrl. */
 window.CATALOG_CONFIG = {
   storeName: "Kenku Perú",
   headline: "Kenku Perú",
@@ -6,7 +6,7 @@ window.CATALOG_CONFIG = {
   country: "Perú",
   locale: "es-PE",
 
-  whatsappNumber: "51900183696",            // ⚠️ COMPLETAR: número con código de país (solo dígitos)
+  whatsappNumber: "51900183696",            // número con código de país (solo dígitos)
   discountPercent: 30,
   checkoutMode: "cod",
 
@@ -19,9 +19,12 @@ window.CATALOG_CONFIG = {
 
   metricsUrl: "https://script.google.com/macros/s/AKfycbyhRH_3rhNDuekJkBVsoQkwSfZTMIgr_JPt28dUpUrqFy5JHrO9sa2rV28NK_936eY79g/exec",                // (opcional) URL del Apps Script para métricas
 
-  shopifyDomain: "kenkuperu.myshopify.com",             // ⚠️ COMPLETAR: algo.myshopify.com
-  storefrontToken: "c6d0875b1ff522976785b2476e772477",           // ⚠️ COMPLETAR: token público de Storefront
-  shopifyApiVersion: "2025-10",
+  // ---- Tienda WooCommerce (WordPress) ----
+  // El catálogo lee los productos de la Store API pública de WooCommerce (sin token).
+  // Los pedidos contra entrega los crea el Apps Script con las claves REST de Woo
+  // (propiedad del script WOO_<dominio>), que NUNCA van en este archivo.
+  platform: "woocommerce",
+  wooUrl: "", // ⚠️ COMPLETAR: URL del WordPress, ej. "https://tutienda.pe"
 
   orderGreeting: "¡Hola! 👋 Quiero agregar estos productos a mi pedido:",
 };

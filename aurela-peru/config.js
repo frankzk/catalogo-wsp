@@ -1,4 +1,4 @@
-/* Configuración de Aurela Perú. */
+/* Configuración de Aurela Perú (WooCommerce). Completa wooUrl. */
 window.CATALOG_CONFIG = {
   storeName: "Aurela Perú",
   headline: "Aurela Perú",
@@ -8,7 +8,7 @@ window.CATALOG_CONFIG = {
 
   whatsappNumber: "51900183696",            // número con código de país (solo dígitos)
   discountPercent: 30,
-  checkoutMode: "cod",           // contra entrega: sube el pedido a Shopify vía el Apps Script
+  checkoutMode: "cod",           // contra entrega: crea el pedido en WooCommerce vía el Apps Script
 
   trustBadges: [
     { icon: "💵", title: "Pago contra entrega", sub: "Pagas al recibir" },
@@ -19,9 +19,12 @@ window.CATALOG_CONFIG = {
 
   metricsUrl: "https://script.google.com/macros/s/AKfycbyhRH_3rhNDuekJkBVsoQkwSfZTMIgr_JPt28dUpUrqFy5JHrO9sa2rV28NK_936eY79g/exec",                // (opcional) URL del Apps Script para métricas
 
-  shopifyDomain: "aurela-peru.myshopify.com",             // dominio Shopify (algo.myshopify.com)
-  storefrontToken: "f58a1a9472822b698f08866fb68907c5", // token público de Storefront
-  shopifyApiVersion: "2025-10",
+  // ---- Tienda WooCommerce (WordPress) ----
+  // El catálogo lee los productos de la Store API pública de WooCommerce (sin token).
+  // Los pedidos contra entrega los crea el Apps Script con las claves REST de Woo
+  // (propiedad del script WOO_<dominio>), que NUNCA van en este archivo.
+  platform: "woocommerce",
+  wooUrl: "", // ⚠️ COMPLETAR: URL del WordPress, ej. "https://tutienda.pe"
 
   orderGreeting: "¡Hola! 👋 Quiero agregar estos productos a mi pedido:",
 };

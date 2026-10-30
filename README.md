@@ -128,6 +128,16 @@ El código (`app.js`, `styles.css`) es **compartido**. Cada tienda vive en su **
 
 Cada tienda necesita su **propio token público de Storefront** (app Headless o app personalizado en su Shopify) y su **número de WhatsApp**.
 
+### Tiendas WooCommerce (WordPress)
+Kenku Perú y Aurela Perú usan WooCommerce. En su `config.js`:
+```js
+platform: "woocommerce",
+wooUrl: "https://tutienda.pe", // URL del WordPress
+```
+- **Productos:** se leen en vivo de la Store API pública de WooCommerce (`/wp-json/wc/store/v1/products`), sin token. Productos simples y variables (cada variación = una oferta, ej. "2 + 1 Gratis"); se ocultan los agotados. Si el WordPress bloquea la lectura desde el navegador (CORS, plugin de seguridad, Cloudflare), el catálogo la pide por el Apps Script (`?action=woo`). Sin `wooUrl` no se muestra nada (no usa `data/products.json`, que es la muestra de otra tienda).
+- **Pedidos contra entrega:** los crea el Apps Script con la REST API de WooCommerce (`/wp-json/wc/v3/orders`): pedido `processing`, pago `cod`, productos vinculados con el precio del catálogo, nombre y dirección del último pedido del mismo teléfono, y si hay un pedido `pending`/`processing`/`on-hold` de ≤48 h lo combina y cancela el anterior.
+- **Claves:** WooCommerce → Ajustes → Avanzado → REST API → Añadir clave (permiso Lectura/Escritura). En el Apps Script → *Propiedades del script* agrega `WOO_<dominio>` = `ck_…:cs_…` (ej. `WOO_tutienda.pe`). Nunca van en el repo.
+
 ### Métricas multi-tienda
 Cada evento ahora incluye el nombre de la tienda (`store`) y el teléfono del cliente (`data.phone`). Puedes usar **una sola Hoja** para todas (agrega una columna `Tienda` en el Apps Script) o una hoja por tienda (cada `metricsUrl` distinto).
 

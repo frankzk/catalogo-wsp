@@ -1,5 +1,5 @@
 /* Catálogo WhatsApp — lógica de cliente (sin backend).
- * Flujo: cargar productos (Shopify en vivo o data/products.json) → grilla estilo
+ * Flujo: cargar productos (Shopify o WooCommerce en vivo, o data/products.json) → grilla estilo
  * WhatsApp Business → detalle con carrusel + reseña → carrito con cantidades →
  * enviar pedido por wa.me. Aplica descuento global y muestra precio antes/después. */
 
@@ -11,11 +11,18 @@
   const DISCOUNT = Math.max(0, Math.min(100, Number(CFG.discountPercent) || 0));
 
   // Modo de checkout: "whatsapp" (envía el pedido por WhatsApp) o "cod"
-  // (sube el pedido a Shopify como contra entrega vía el Apps Script).
+  // (sube el pedido a Shopify o WooCommerce como contra entrega vía el Apps Script).
   const CHECKOUT = (CFG.checkoutMode || "whatsapp").toLowerCase();
 
+  // Plataforma de la tienda: "shopify" (por defecto) o "woocommerce" (WordPress).
+  const PLATFORM = (CFG.platform || "shopify").toLowerCase();
+  const WOO_URL = String(CFG.wooUrl || "").trim().replace(/\/+$/, "");
+  // Dice al Apps Script a qué tienda y plataforma corresponde cada envío.
+  const backend = () => ({ platform: PLATFORM, shopDomain: CFG.shopifyDomain || "", wooUrl: WOO_URL });
+  const STORE_KEY = CFG.shopifyDomain || WOO_URL.replace(/^https?:\/\//, "") || CFG.storeName || "catalogo";
+
   // Teléfono del cliente: del link (?tel=), de la sesión guardada, o de la pantalla de acceso.
-  const PHONE_KEY = "phone:" + (CFG.shopifyDomain || CFG.storeName || "catalogo");
+  const PHONE_KEY = "phone:" + STORE_KEY;
   let customerPhone = "";
   (function () {
     try {
@@ -27,7 +34,7 @@
   })();
 
   // Nombre del cliente (del link ?name=, de la sesión guardada, o de la pantalla de acceso).
-  const NAME_KEY = "name:" + (CFG.shopifyDomain || CFG.storeName || "catalogo");
+  const NAME_KEY = "name:" + STORE_KEY;
   let customerName = (() => {
     try {
       const fromUrl = (new URLSearchParams(location.search).get("name") || "").trim();
@@ -76,6 +83,11 @@
 
   /* ---------- Carga de productos ---------- */
   async function loadProducts() {
+    // WooCommerce sin respaldo local: data/products.json es la muestra de otra tienda.
+    if (PLATFORM === "woocommerce") {
+      if (!WOO_URL) throw new Error("Falta wooUrl en config.js");
+      return await loadFromWoo();
+    }
     if (CFG.shopifyDomain && CFG.storefrontToken) {
       try { return await loadFromShopify(); }
       catch (e) { console.warn("Storefront API falló, uso respaldo local:", e); }
@@ -156,6 +168,114 @@
       cursor = conn.pageInfo.endCursor;
     }
     return out;
+  }
+
+  /* ---------- WooCommerce (Store API pública, sin token) ---------- */
+  // GET a la Store API. Si el navegador lo bloquea (CORS / firewall del WordPress),
+  // reintenta por el Apps Script (?action=woo), que lo pide del lado del servidor.
+  let wooViaProxy = false;
+  async function wooGet(path) {
+    if (!wooViaProxy) {
+      try {
+        const res = await fetch(WOO_URL + "/wp-json" + path, { headers: { Accept: "application/json" } });
+        if (!res.ok) throw new Error("Woo HTTP " + res.status);
+        return await res.json();
+      } catch (e) {
+        if (!CFG.metricsUrl) throw e;
+        console.warn("Store API directa falló, uso el Apps Script como puente:", e);
+        wooViaProxy = true;
+      }
+    }
+    const qs = new URLSearchParams({ action: "woo", site: WOO_URL, path });
+    const res = await fetch(CFG.metricsUrl + "?" + qs.toString());
+    if (!res.ok) throw new Error("Puente Woo HTTP " + res.status);
+    const j = await res.json();
+    if (j && j.ok === false) throw new Error("Puente Woo: " + (j.error || "error"));
+    return j;
+  }
+
+  // Precio de la Store API: texto en unidades menores ("19900" con minor_unit 2 = 199.00).
+  function wooPrice(prices) {
+    if (!prices) return 0;
+    if (prices.currency_code) CURRENCY = prices.currency_code;
+    const unit = Number(prices.currency_minor_unit != null ? prices.currency_minor_unit : 2);
+    return Number(prices.price || 0) / Math.pow(10, unit);
+  }
+
+  // Nombre legible de una variación: valores de sus atributos ("2 + 1 Gratis").
+  function wooVariantTitle(parent, attrs) {
+    const labels = (attrs || []).map((a) => {
+      const def = (parent.attributes || []).find((x) => x.name === a.name || x.taxonomy === a.name);
+      const term = def && (def.terms || []).find((t) => t.slug === a.value);
+      return decodeHtml(term ? term.name : a.value);
+    }).filter(Boolean);
+    return labels.join(" / ") || "Default";
+  }
+
+  async function loadFromWoo() {
+    const PER = 100;
+    const all = [];
+    for (let page = 1; page <= 20; page++) {
+      const batch = await wooGet(`/wc/store/v1/products?per_page=${PER}&page=${page}&orderby=popularity&order=desc`);
+      if (!Array.isArray(batch)) throw new Error("Respuesta inesperada de la Store API");
+      all.push(...batch);
+      if (batch.length < PER) break;
+    }
+
+    // Precio y stock propios de cada variación (ofertas tipo "1 unidad / 2 + 1 gratis").
+    const variable = all.filter((p) => p.type === "variable" && (p.variations || []).length);
+    const varById = new Map();
+    if (variable.length) {
+      const ids = variable.map((p) => p.id).join(",");
+      try {
+        for (let page = 1; page <= 20; page++) {
+          const batch = await wooGet(`/wc/store/v1/products?type=variation&parent=${ids}&per_page=${PER}&page=${page}`);
+          if (!Array.isArray(batch)) break;
+          batch.forEach((v) => varById.set(v.id, v));
+          if (batch.length < PER) break;
+        }
+      } catch (e) { console.warn("No se pudieron listar variaciones en lote:", e); }
+      // Las que falten se piden una por una.
+      const missing = variable.flatMap((p) => p.variations.map((v) => v.id)).filter((id) => !varById.has(id));
+      for (let i = 0; i < missing.length; i += 6) {
+        const chunk = missing.slice(i, i + 6);
+        const got = await Promise.all(chunk.map((id) => wooGet(`/wc/store/v1/products/${id}`).catch(() => null)));
+        got.forEach((v) => { if (v && v.id) varById.set(v.id, v); });
+      }
+    }
+
+    const sellable = (x) => x && x.is_in_stock !== false && x.is_purchasable !== false;
+    const out = [];
+    for (const p of all) {
+      if (p.type !== "simple" && p.type !== "variable") continue;
+      let variants;
+      if (p.type === "variable") {
+        variants = (p.variations || []).map((ref) => {
+          const v = varById.get(ref.id);
+          if (!sellable(v)) return null;
+          return { id: String(ref.id), productId: p.id, variationId: ref.id, title: wooVariantTitle(p, ref.attributes), price: wooPrice(v.prices), available: true, sku: v.sku || p.sku || "" };
+        }).filter(Boolean);
+      } else {
+        variants = sellable(p) ? [{ id: String(p.id), productId: p.id, variationId: 0, title: "Default", price: wooPrice(p.prices), available: true, sku: p.sku || "" }] : [];
+      }
+      variants = variants.filter((v) => v.price > 0);
+      if (!variants.length) continue; // sin stock o sin precio → no se muestra
+      out.push({
+        id: String(p.id),
+        title: decodeHtml(p.name),
+        type: decodeHtml(((p.categories || [])[0] || {}).name || "Otros"),
+        desc: shorten(decodeHtml(stripHtml(p.short_description || p.description || "")), 220),
+        images: (p.images || []).map((im) => im.src).filter(Boolean).slice(0, 4),
+        variants,
+      });
+    }
+    return out;
+  }
+
+  function decodeHtml(s) {
+    const t = document.createElement("textarea");
+    t.innerHTML = String(s == null ? "" : s);
+    return t.value;
   }
 
   function stripHtml(s) { return String(s).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(); }
@@ -535,10 +655,10 @@
     return lines.join("\n");
   }
 
-  // Arma los ítems del pedido (precios ya con descuento + variante para Shopify).
+  // Arma los ítems del pedido (precios ya con descuento + IDs para Shopify / WooCommerce).
   function orderItems() {
     const items = [];
-    cart.forEach((e) => items.push({ qty: e.qty, title: e.product.title, option: e.variant.title, sku: e.variant.sku || "", price: priced(e.product, e.variant).pay, variantId: e.variant.id }));
+    cart.forEach((e) => items.push({ qty: e.qty, title: e.product.title, option: e.variant.title, sku: e.variant.sku || "", price: priced(e.product, e.variant).pay, variantId: e.variant.id, productId: e.variant.productId || 0, variationId: e.variant.variationId || 0 }));
     return items;
   }
 
@@ -546,7 +666,7 @@
     if (cart.size === 0) return;
     if (CHECKOUT === "cod") return submitCod();
     // --- Modo WhatsApp ---
-    track("order", { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone: customerPhone, shopDomain: CFG.shopifyDomain || "" });
+    track("order", { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone: customerPhone, ...backend() });
     const number = String(CFG.whatsappNumber || "").replace(/\D/g, "");
     const text = encodeURIComponent(buildOrderMessage());
     const url = number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;
@@ -583,7 +703,7 @@
       store: CFG.storeName || "",
       country: CFG.country || "",
       ts: new Date().toISOString(),
-      data: { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone, name: customerName, shopDomain: CFG.shopifyDomain || "", createOrder: true },
+      data: { items: orderItems(), total: cartTotals().total, totalText: money(cartTotals().total), phone, name: customerName, ...backend(), createOrder: true },
     };
     setSending(true);
     let ok = true, orderName = "", merged = false;
@@ -816,14 +936,14 @@
     if (customerName && $("#storeSub")) $("#storeSub").textContent = `👋 ¡Bienvenido(a), ${firstName(customerName)}!`;
   }
 
-  // Pide al Apps Script el nombre del cliente según su teléfono (Shopify Admin).
+  // Pide al Apps Script el nombre del cliente según su teléfono (Shopify / WooCommerce).
   async function lookupName() {
     if (!CFG.metricsUrl || !customerPhone) return;
     try {
       const res = await fetch(CFG.metricsUrl, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ event: "lookup", store: CFG.storeName || "", country: CFG.country || "", data: { phone: customerPhone, shopDomain: CFG.shopifyDomain || "" } }),
+        body: JSON.stringify({ event: "lookup", store: CFG.storeName || "", country: CFG.country || "", data: { phone: customerPhone, ...backend() } }),
       });
       const j = await res.json();
       if (j && j.name) { customerName = j.name; try { localStorage.setItem(NAME_KEY, customerName); } catch (e) {} applyWelcome(); }
