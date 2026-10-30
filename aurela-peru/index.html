@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#075E54" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📺</text></svg>" />
+    <title>Catálogo</title>
+    <meta name="description" content="Catálogo de productos. Añade lo que quieras al carrito y envíanos tu pedido por WhatsApp con un solo clic." />
+    <link rel="stylesheet" href="../styles.css?v=45" />
+  </head>
+  <body>
+    <!-- Cabecera estilo WhatsApp -->
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="store-avatar" id="storeAvatar">K</div>
+        <div class="store-meta">
+          <h1 id="storeName">Catálogo</h1>
+          <span class="store-sub" id="storeSub">Catálogo de productos</span>
+        </div>
+        <button id="headerCart" class="header-cart" aria-label="Ver pedido">
+          <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+            <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M3 4h2l2.4 12.3a1 1 0 0 0 1 .8h8.6a1 1 0 0 0 1-.8L21 8H6" />
+            <circle cx="10" cy="20" r="1.4" fill="currentColor" />
+            <circle cx="17" cy="20" r="1.4" fill="currentColor" />
+          </svg>
+          <span class="header-cart-badge" id="headerCartCount" hidden>0</span>
+        </button>
+      </div>
+      <div class="search-wrap">
+        <input
+          id="search"
+          type="search"
+          inputmode="search"
+          placeholder="Buscar producto…"
+          autocomplete="off"
+        />
+      </div>
+      <div class="chips" id="categoryChips"></div>
+    </header>
+
+    <!-- Tira de confianza bajo la cabecera -->
+    <div id="trustStrip" class="trust-strip" hidden></div>
+
+    <!-- Estado de carga / error -->
+    <div id="status" class="status">Cargando catálogo…</div>
+
+    <!-- Grilla de productos -->
+    <main id="grid" class="grid" aria-live="polite"></main>
+
+    <!-- Barra inferior del carrito -->
+    <button id="cartBar" class="cart-bar" hidden>
+      <span class="cart-bar-count" id="cartBarCount">0</span>
+      <span class="cart-bar-label">Ver pedido</span>
+      <span class="cart-bar-total" id="cartBarTotal">₡0</span>
+    </button>
+
+    <!-- Hoja de detalle del producto (carrusel + reseña) -->
+    <div id="detail" class="sheet" hidden>
+      <div class="sheet-backdrop"></div>
+      <div class="sheet-panel" id="detailPanel" role="dialog" aria-modal="true" aria-label="Detalle del producto"></div>
+    </div>
+
+    <!-- Hoja del carrito -->
+    <div id="sheet" class="sheet" hidden>
+      <div class="sheet-backdrop" data-close></div>
+      <div class="sheet-panel" role="dialog" aria-modal="true" aria-label="Tu pedido">
+        <div class="grabber"></div>
+        <div class="sheet-head">
+          <h2>Tu pedido</h2>
+          <button class="sheet-close" data-close aria-label="Cerrar">&times;</button>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="sheet-foot">
+          <div id="cartTrust" class="cart-trust"></div>
+          <div class="cart-total-row">
+            <span>Total</span>
+            <strong id="cartTotal">₡0</strong>
+          </div>
+          <button id="sendBtn" class="send-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path fill="currentColor" d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.045z" />
+              <path fill="currentColor" d="M9.5 7.3c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.3.3-1 .9-1 2.3s1 2.6 1.2 2.8c.1.2 2 3.1 4.9 4.3 2.4 1 2.9.8 3.4.7.5 0 1.6-.6 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3-.3-.2-1.6-.8-1.9-.9-.3-.1-.4-.1-.6.1-.2.3-.6.9-.8 1.1-.1.1-.3.2-.5.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.5-1.5-1.8-.1-.3 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.3 0-.5 0-.1-.6-1.5-.8-2z" />
+            </svg>
+            Enviar pedido por WhatsApp
+          </button>
+          <button id="continueBtn" class="continue-link">← Seguir comprando</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="config.js?v=45"></script>
+    <script src="../app.js?v=45"></script>
+  </body>
+</html>
