@@ -138,6 +138,13 @@ wooUrl: "https://tutienda.pe", // URL del WordPress
 - **Pedidos contra entrega:** los crea el Apps Script con la REST API de WooCommerce (`/wp-json/wc/v3/orders`): pedido `processing`, pago `cod`, productos vinculados con el precio del catálogo, nombre y dirección del último pedido del mismo teléfono, y si hay un pedido `pending`/`processing`/`on-hold` de ≤48 h lo combina y cancela el anterior.
 - **Claves:** WooCommerce → Ajustes → Avanzado → REST API → Añadir clave (permiso Lectura/Escritura). En el Apps Script → *Propiedades del script* agrega `WOO_<dominio>` = `ck_…:cs_…` (ej. `WOO_tutienda.pe`). Nunca van en el repo.
 
+### Dónde está el backend (Apps Script)
+- Vive dentro de la Hoja de Google **"Métricas Catálogo WSP Mireva Costa Rica"** → *Extensiones → Apps Script*. El proyecto se llama "Proyecto sin título"; hay otros proyectos con ese nombre en el Drive, así que conviene renombrarlo a "Catálogo WSP backend".
+- Su URL `/exec` es el `metricsUrl` de todas las tiendas y el `ENDPOINT` del dashboard.
+- Para publicar un cambio: *Implementar → Administrar implementaciones → editar → Nueva versión*. Solo guardar no basta. La URL no cambia.
+- El token del bot, los client secrets de Shopify, los tokens Admin, `WOO_…` y `DASHBOARD_KEY` viven solo en el Apps Script y sus Propiedades del script, nunca en este repo.
+- Los links directos a la Hoja y al script están en el Doc privado "Catálogo WSP: dónde está todo" del Drive del dueño.
+
 ### Métricas multi-tienda
 Cada evento ahora incluye el nombre de la tienda (`store`) y el teléfono del cliente (`data.phone`). Puedes usar **una sola Hoja** para todas (agrega una columna `Tienda` en el Apps Script) o una hoja por tienda (cada `metricsUrl` distinto).
 
